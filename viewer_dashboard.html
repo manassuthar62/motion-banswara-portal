@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Only Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; }
+
+        .navbar { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+
+        /* Stats Cards */
+        .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-card { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; border-bottom: 4px solid transparent; }
+        .stat-card h2 { font-size: 2.5rem; color: #333; margin: 5px 0; }
+        
+        .st-total { border-color: #3742fa; } .st-total h2 { color: #3742fa; }
+        .st-pending { border-color: #ffa502; } .st-pending h2 { color: #ffa502; }
+        .st-completed { border-color: #2ed573; } .st-completed h2 { color: #2ed573; }
+        .st-rejected { border-color: #ff4757; } .st-rejected h2 { color: #ff4757; }
+
+        /* Category Section */
+        .cat-container { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; background: white; padding: 1rem; border-radius: 10px; }
+        .cat-card { flex: 1; text-align: center; padding: 10px; border-right: 1px solid #eee; min-width: 100px; }
+        .cat-card:last-child { border-right: none; }
+        .cat-card h3 { color: #11998e; margin-bottom: 5px; }
+
+        /* Table Card */
+        .card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .card-header { padding: 1rem; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        
+        .search-box { padding: 8px; border: 1px solid #ddd; border-radius: 5px; width: 250px; }
+        .btn-excel { background: #10ac84; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; }
+        
+        .status-badge { padding: 4px 10px; border-radius: 15px; font-size: 0.8rem; font-weight: bold; }
+        .status-Pending { background: #fff3cd; color: #856404; }
+        .status-Assigned { background: #dbeafe; color: #2563eb; }
+        .status-Completed { background: #d1fae5; color: #047857; }
+        .status-Rejected { background: #fee2e2; color: #b91c1c; }
+
+        /* Modal */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; }
+        .modal-content { background: white; width: 90%; max-width: 700px; border-radius: 10px; padding: 2rem; position: relative; }
+        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 1.5rem; cursor: pointer; border: none; background: none; }
+        
+        .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .info-group h4 { color: #11998e; border-bottom: 2px solid #eee; padding-bottom: 5px; }
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; }
+        
+        .doc-btn { display: inline-block; padding: 8px 12px; background: #333; color: white; text-decoration: none; border-radius: 4px; font-size: 0.8rem; margin-right: 5px; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <h2>👁️ View-Only Dashboard</h2>
+        <button onclick="logout()" style="background:rgba(255,255,255,0.2); border:1px solid white; color:white; padding:5px 15px; cursor:pointer;">Logout</button>
+    </nav>
+
+    <div class="container">
+        
+        <div class="stats-container">
+            <div class="stat-card st-total"><h2><span id="total">0</span></h2><p>Total</p></div>
+            <div class="stat-card st-pending"><h2><span id="pending">0</span></h2><p>Pending</p></div>
+            <div class="stat-card st-completed"><h2><span id="completed">0</span></h2><p>Completed</p></div>
+            <div class="stat-card st-rejected"><h2><span id="rejected">0</span></h2><p>Rejected</p></div>
+        </div>
+
+        <div class="cat-container">
+            <div class="cat-card"><h3 id="catGen">0</h3><span>GENERAL</span></div>
+            <div class="cat-card"><h3 id="catOBC">0</h3><span>OBC</span></div>
+            <div class="cat-card"><h3 id="catSC">0</h3><span>SC</span></div>
+            <div class="cat-card"><h3 id="catST">0</h3><span>ST</span></div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>📋 Applications Report</h3>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="search" class="search-box" placeholder="Search...">
+                    <button onclick="exportToExcel()" class="btn-excel">📊 Download Excel</button>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name / Father</th>
+                        <th>Category</th>
+                        <th>Course</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"><tr><td colspan="5" style="text-align:center; padding:2rem;">Loading...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="modal" class="modal-overlay">
+        <div class="modal-content">
+            <button onclick="closeModal()" class="close-btn">&times;</button>
+            <h2 id="modalTitle" style="margin-bottom:20px; color:#333;">Details</h2>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:5000/api";
+        let allData = [];
+
+        if(localStorage.getItem('isViewerLoggedIn') !== 'true') window.location.href = "viewer_login.html";
+
+        async function loadData() {
+            try {
+                const res = await fetch(`${API_URL}/students`);
+                allData = await res.json();
+                
+                // Update Counts (Using 'Completed' logic)
+                document.getElementById('total').innerText = allData.length;
+                document.getElementById('pending').innerText = allData.filter(s => s.status === 'Pending').length;
+                document.getElementById('completed').innerText = allData.filter(s => s.status === 'Completed').length;
+                document.getElementById('rejected').innerText = allData.filter(s => s.status === 'Rejected').length;
+
+                document.getElementById('catGen').innerText = allData.filter(s => s.category === 'General').length;
+                document.getElementById('catOBC').innerText = allData.filter(s => s.category === 'OBC').length;
+                document.getElementById('catSC').innerText = allData.filter(s => s.category === 'SC').length;
+                document.getElementById('catST').innerText = allData.filter(s => s.category === 'ST').length;
+
+                renderTable(allData);
+            } catch(e) { console.log(e); }
+        }
+
+        function renderTable(data) {
+            document.getElementById('tableBody').innerHTML = data.map(s => `
+                <tr>
+                    <td><b>${s.studentName}</b><br><small>${s.fatherName}</small></td>
+                    <td>${s.category || '-'}</td>
+                    <td>${s.course || '-'}</td>
+                    <td><span class="status-badge status-${s.status}">${s.status}</span></td>
+                    <td><button onclick="viewDetails('${s._id}')" style="background:#11998e; color:white; border:none; padding:5px 10px; cursor:pointer; border-radius:4px;">👁️ View</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function viewDetails(id) {
+            const s = allData.find(d => d._id === id);
+            document.getElementById('modalTitle').innerText = s.studentName;
+            document.getElementById('modalBody').innerHTML = `
+                <div class="details-grid">
+                    <div class="info-group">
+                        <h4>Personal</h4>
+                        <div class="info-row"><span>Father:</span> <b>${s.fatherName}</b></div>
+                        <div class="info-row"><span>Mother:</span> <b>${s.motherName}</b></div>
+                        <div class="info-row"><span>Mobile:</span> <b>${s.mobile}</b></div>
+                        <div class="info-row"><span>Income:</span> <b>${s.familyIncome}</b></div>
+                    </div>
+                    <div class="info-group">
+                        <h4>Academic & System</h4>
+                        <div class="info-row"><span>School:</span> <b>${s.school}</b></div>
+                        <div class="info-row"><span>SSO ID:</span> <b>${s.ssoId}</b></div>
+                        <div class="info-row"><span>Status:</span> <b style="color:blue">${s.status}</b></div>
+                        <div class="info-row"><span>Remark:</span> <b>${s.adminRemark || '-'}</b></div>
+                    </div>
+                </div>
+                <div style="margin-top:20px; text-align:center;">
+                    <a href="${s.marksheet10th}" download class="doc-btn">Download Marksheet</a>
+                    <a href="${s.incomeProof}" download class="doc-btn">Download Income Cert</a>
+                </div>
+            `;
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('modal').style.display = 'none'; }
+
+        // Export Excel
+        function exportToExcel() {
+            if(allData.length === 0) return alert("No data!");
+            let csv = "Name\tFather\tCategory\tCourse\tMobile\tStatus\tRemark\n";
+            allData.forEach(s => {
+                csv += `${s.studentName}\t${s.fatherName}\t${s.category}\t${s.course}\t${s.mobile}\t${s.status}\t${s.adminRemark}\n`;
+            });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(new Blob([csv], { type: 'application/vnd.ms-excel' }));
+            link.download = 'Report.xls'; link.click();
+        }
+
+        document.getElementById('search').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            renderTable(allData.filter(s => s.studentName.toLowerCase().includes(term) || s.mobile.includes(term)));
+        });
+
+        function logout() { localStorage.removeItem('isViewerLoggedIn'); window.location.href = "viewer_login.html"; }
+        loadData();
+    </script>
+</body>
+</html>

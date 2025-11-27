@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Observer Login - Motion Banswara</title>
+    <style>
+        body {
+            margin: 0; font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); /* Green Theme for Viewer */
+            height: 100vh; display: flex; justify-content: center; align-items: center;
+        }
+        .login-card {
+            background: white; padding: 2.5rem; border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 100%; max-width: 380px; text-align: center;
+        }
+        h2 { color: #333; margin-bottom: 0.5rem; }
+        p { color: #666; font-size: 0.9rem; margin-bottom: 1.5rem; }
+        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 12px; background: #11998e; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        .btn:hover { background: #0e857b; }
+        .back-link { display: block; margin-top: 15px; color: white; text-decoration: none; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <h2>👁️ Observer Login</h2>
+        <p>View-Only Access (No Editing)</p>
+        
+        <input type="text" id="username" placeholder="Username (guest)">
+        <input type="password" id="password" placeholder="Password">
+        
+        <button class="btn" onclick="login()">Access Dashboard</button>
+    </div>
+
+    <a href="admin.html" class="back-link">← Back to Main Page</a>
+
+    <script>
+        function login() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+
+            // Simple ID/Pass for Guest
+            if (user === "guest" && pass === "guest123") {
+                localStorage.setItem('isViewerLoggedIn', 'true');
+                window.location.href = "viewer_dashboard.html";
+            } else {
+                alert("❌ Access Denied!");
+            }
+        }
+    </script>
+</body>
+</html>

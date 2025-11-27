@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Portal - Motion Banswara</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #4361ee; --light-bg: #f3f4f6; --white: #ffffff;
+            --text-dark: #1f2937; --text-light: #6b7280;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: var(--light-bg); color: var(--text-dark); padding-bottom: 3rem; }
+
+        /* NAVBAR */
+        .navbar {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            padding: 1rem 2rem; color: white; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100;
+        }
+        .brand { font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .user-name { font-weight: 500; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; margin-right: 10px; }
+        .logout-btn { background: #ff4757; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        .logout-btn:hover { background: #ff6b81; transform: translateY(-2px); }
+
+        .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; animation: slideUp 0.5s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- UPDATED STATS CARDS --- */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-box { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 15px; border-bottom: 4px solid transparent; transition: transform 0.3s; }
+        .stat-box:hover { transform: translateY(-5px); }
+        .stat-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .stat-info h3 { font-size: 1.8rem; margin: 0; color: var(--text-dark); line-height: 1; }
+        .stat-info p { font-size: 0.9rem; color: var(--text-light); margin: 5px 0 0 0; font-weight: 500; }
+
+        /* Colors */
+        .sb-pending { border-color: #f1c40f; } .sb-pending .stat-icon { background: #fff3cd; color: #f39c12; }
+        .sb-assigned { border-color: #3498db; } .sb-assigned .stat-icon { background: #dbeafe; color: #2980b9; }
+        .sb-completed { border-color: #2ecc71; } .sb-completed .stat-icon { background: #d1fae5; color: #27ae60; }
+        .sb-rejected { border-color: #e74c3c; } .sb-rejected .stat-icon { background: #fce4ec; color: #c0392b; }
+
+        /* CARD & FORM */
+        .card { background: var(--white); border-radius: 15px; padding: 2rem; box-shadow: var(--shadow); margin-bottom: 2rem; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
+        .card-header h2 { font-size: 1.5rem; color: var(--text-dark); }
+        
+        .form-section-title { color: var(--primary); font-size: 1.1rem; font-weight: 600; margin: 1.5rem 0 1rem 0; display: flex; align-items: center; gap: 8px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.2rem; }
+        .input-group label { display: block; font-size: 0.9rem; font-weight: 500; margin-bottom: 5px; color: var(--text-dark); }
+        .input-box { width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 8px; outline: none; background: #f9fafb; }
+        .input-box:focus { border-color: var(--primary); background: white; }
+        .file-box { border: 2px dashed #cbd5e1; padding: 15px; border-radius: 8px; text-align: center; background: #f8fafc; cursor: pointer; }
+        .btn-submit { width: 100%; padding: 14px; background: linear-gradient(to right, #4361ee, #3f37c9); color: white; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1.5rem; }
+        .btn-update { background: linear-gradient(to right, #f59e0b, #d97706); }
+
+        /* TABLE */
+        .table-responsive { overflow-x: auto; border-radius: 10px; border: 1px solid #e5e7eb; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f3f4f6; color: var(--text-dark); font-weight: 600; padding: 15px; text-align: left; }
+        td { padding: 15px; border-bottom: 1px solid #e5e7eb; color: var(--text-dark); font-size: 0.9rem; }
+        
+        .status-badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+        .st-Pending { background: #fff7ed; color: #c2410c; }
+        .st-Assigned { background: #dbeafe; color: #2563eb; } /* New Color for Assigned */
+        .st-Completed { background: #ecfdf5; color: #047857; }
+        .st-Rejected { background: #fef2f2; color: #b91c1c; }
+
+        .btn-edit { background: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 0.8rem; }
+        .remark-alert { font-size: 0.85rem; color: #b91c1c; background: #fff1f2; padding: 5px 10px; border-radius: 5px; margin-top: 5px; display: inline-block; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="brand"><i class="fa-solid fa-graduation-cap"></i> Motion Employee</div>
+        <div>
+            <span class="user-name"><i class="fa-regular fa-user"></i> <span id="empNameDisplay">User</span></span>
+            <button onclick="logout()" class="logout-btn">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <div class="stats-grid">
+            <div class="stat-box sb-pending">
+                <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+                <div class="stat-info"><h3 id="countPending">0</h3><p>Pending (Admin)</p></div>
+            </div>
+            <div class="stat-box sb-assigned">
+                <div class="stat-icon"><i class="fa-solid fa-user-gear"></i></div>
+                <div class="stat-info"><h3 id="countAssigned">0</h3><p>Assigned (Filling)</p></div>
+            </div>
+            <div class="stat-box sb-completed">
+                <div class="stat-icon"><i class="fa-solid fa-check-circle"></i></div>
+                <div class="stat-info"><h3 id="countCompleted">0</h3><p>Completed</p></div>
+            </div>
+            <div class="stat-box sb-rejected">
+                <div class="stat-icon"><i class="fa-solid fa-circle-xmark"></i></div>
+                <div class="stat-info"><h3 id="countRejected">0</h3><p>Rejected</p></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2 id="formTitle"><i class="fa-solid fa-file-pen"></i> New Application</h2>
+                <button type="button" onclick="resetForm()" id="cancelBtn" style="display:none; background:#e5e7eb; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">Cancel Edit</button>
+            </div>
+
+            <form id="studentForm">
+                <input type="hidden" name="editId" id="editId">
+
+                <div class="form-section-title">Personal Information</div>
+                <div class="form-grid">
+                    <div class="input-group"><label>Student Name *</label><input type="text" name="studentName" class="input-box" required></div>
+                    <div class="input-group"><label>Father's Name *</label><input type="text" name="fatherName" class="input-box" required></div>
+                    <div class="input-group"><label>Mother's Name *</label><input type="text" name="motherName" class="input-box" required></div>
+                    <div class="input-group"><label>Date of Birth *</label><input type="date" name="dob" class="input-box" required></div>
+                    <div class="input-group">
+                        <label>Category *</label>
+                        <select name="category" class="input-box" required>
+                            <option value="">Select Category</option>
+                            <option value="General">General</option>
+                            <option value="OBC">OBC</option>
+                            <option value="SC">SC</option>
+                            <option value="ST">ST</option>
+                            <option value="Minority">Minority</option>
+                        </select>
+                    </div>
+                    <div class="input-group"><label>Family Income *</label><input type="text" name="familyIncome" class="input-box" required></div>
+                </div>
+
+                <div class="form-section-title">Contact & Academic</div>
+                <div class="form-grid">
+                    <div class="input-group"><label>Mobile *</label><input type="number" name="mobile" class="input-box" required></div>
+                    <div class="input-group"><label>Alt. Mobile</label><input type="number" name="altMobile" class="input-box"></div>
+                    <div class="input-group"><label>SSO ID *</label><input type="text" name="ssoId" class="input-box" required></div>
+                    <div class="input-group"><label>SSO Password</label><input type="text" name="password" class="input-box"></div>
+                    <div class="input-group"><label>Jan Aadhar</label><input type="text" name="janAadhar" class="input-box"></div>
+                    <div class="input-group"><label>School Name</label><input type="text" name="school" class="input-box" required></div>
+                    <div class="input-group"><label>10th Roll No</label><input type="text" name="rollNumber" class="input-box" required></div>
+                    <div class="input-group"><label>Percentage</label><input type="number" step="0.01" name="percentage" class="input-box" required></div>
+                    <div class="input-group"><label>Passing Year</label><input type="text" name="passingYear" class="input-box" required></div>
+                    <div class="input-group">
+                        <label>Course *</label>
+                        <select name="course" class="input-box" required>
+                            <option value="">Select Course</option>
+                            <option value="JEE">JEE</option>
+                            <option value="NEET">NEET</option>
+                            <option value="CLAT">CLAT</option>
+                            <option value="Constable">Constable</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-section-title">Documents</div>
+                <div class="form-grid">
+                    <div class="file-box"><label>📄 10th Marksheet</label><input type="file" name="marksheet10th"></div>
+                    <div class="file-box"><label>💰 Income Certificate</label><input type="file" name="incomeProof"></div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submitBtn">🚀 Submit Application</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fa-solid fa-clock-rotate-left"></i> Submission Status</h2>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr><th>Student / SSO</th><th>Course</th><th>Date</th><th>Status</th><th>Action</th></tr>
+                    </thead>
+                    <tbody id="historyTable"><tr><td colspan="5" style="text-align:center; padding:20px;">Loading...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:5000/api";
+        const empName = localStorage.getItem('empName');
+        let currentStudents = [];
+
+        if(localStorage.getItem('isEmpLoggedIn') !== 'true') window.location.href = "index.html";
+        document.getElementById('empNameDisplay').innerText = empName;
+
+        // FORM SUBMIT
+        document.getElementById('studentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const editId = document.getElementById('editId').value;
+            btn.textContent = "Processing..."; btn.disabled = true;
+
+            const formData = new FormData(e.target);
+            const studentData = { uploadDate: new Date().toLocaleDateString('hi-IN'), enteredBy: empName };
+
+            for (let [key, value] of formData.entries()) {
+                if (key !== 'marksheet10th' && key !== 'incomeProof') studentData[key] = value;
+            }
+
+            const mark = formData.get('marksheet10th');
+            const inc = formData.get('incomeProof');
+            if (mark.size > 0) studentData.marksheet10th = await fileToBase64(mark);
+            if (inc.size > 0) studentData.incomeProof = await fileToBase64(inc);
+
+            try {
+                let url = editId ? `${API_URL}/edit-student/${editId}` : `${API_URL}/add-student`;
+                let method = editId ? 'PUT' : 'POST';
+
+                const res = await fetch(url, {
+                    method: method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(studentData)
+                });
+
+                if(res.ok) { alert(editId ? "✅ Updated!" : "✅ Submitted!"); resetForm(); loadHistory(); } 
+                else { alert("❌ Failed!"); }
+            } catch (err) { alert("Server Error"); }
+            finally { btn.disabled = false; }
+        });
+
+        // LOAD HISTORY & STATS
+        async function loadHistory() {
+            try {
+                const res = await fetch(`${API_URL}/my-students/${empName}`);
+                currentStudents = await res.json();
+                
+                // UPDATE COUNTS (Approved -> Completed Logic)
+                document.getElementById('countPending').innerText = currentStudents.filter(s => s.status === 'Pending').length;
+                document.getElementById('countAssigned').innerText = currentStudents.filter(s => s.status === 'Assigned').length; // NEW
+                document.getElementById('countCompleted').innerText = currentStudents.filter(s => s.status === 'Completed').length; // CHANGED
+                document.getElementById('countRejected').innerText = currentStudents.filter(s => s.status === 'Rejected').length;
+
+                const tbody = document.getElementById('historyTable');
+                if(currentStudents.length === 0) { tbody.innerHTML = "<tr><td colspan='5' style='text-align:center; padding:20px;'>No records found.</td></tr>"; return; }
+
+                tbody.innerHTML = currentStudents.map(s => `
+                    <tr>
+                        <td><b>${s.studentName}</b><br><small>${s.ssoId}</small></td>
+                        <td>${s.course}</td>
+                        <td>${s.uploadDate}</td>
+                        <td>
+                            <span class="status-badge st-${s.status}">${s.status}</span>
+                            ${s.adminRemark ? `<br><div class="remark-alert">⚠️ ${s.adminRemark}</div>` : ''}
+                        </td>
+                        <td>${s.status === 'Rejected' ? `<button onclick="editForm('${s._id}')" class="btn-edit">✏️ Edit</button>` : '-'}</td>
+                    </tr>
+                `).join('');
+            } catch(e) { console.log(e); }
+        }
+
+        window.editForm = function(id) {
+            const student = currentStudents.find(s => s._id === id);
+            if(!student) return;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            const form = document.getElementById('studentForm');
+            document.getElementById('editId').value = student._id;
+            Object.keys(student).forEach(key => { if (form.elements[key] && form.elements[key].type !== 'file') form.elements[key].value = student[key]; });
+            document.getElementById('formTitle').innerHTML = `✏️ Editing: ${student.studentName}`;
+            const btn = document.getElementById('submitBtn');
+            btn.textContent = "🔄 Update & Resubmit"; btn.classList.add('btn-update');
+            document.getElementById('cancelBtn').style.display = 'inline-block';
+        }
+
+        window.resetForm = function() {
+            document.getElementById('studentForm').reset();
+            document.getElementById('editId').value = "";
+            document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-file-pen"></i> New Application`;
+            const btn = document.getElementById('submitBtn');
+            btn.textContent = "🚀 Submit Application"; btn.classList.remove('btn-update');
+            document.getElementById('cancelBtn').style.display = 'none';
+        }
+
+        function fileToBase64(file) { return new Promise((r) => { const reader = new FileReader(); reader.onloadend = () => r(reader.result); reader.readAsDataURL(file); }); }
+        function logout() { localStorage.removeItem('isEmpLoggedIn'); window.location.href = "index.html"; }
+
+        loadHistory();
+    </script>
+</body>
+</html>
