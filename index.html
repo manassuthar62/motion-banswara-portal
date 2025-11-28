@@ -34,13 +34,13 @@
 <body>
 
     <div class="login-card">
-        <h2>👋 Employee Login</h2>
-        <p>अपना काम शुरू करने के लिए लॉगिन करें</p>
+        <h2>👋 Staff Login</h2>
+        <p>Field Staff & Office Team Login</p>
         
-        <input type="text" id="username" placeholder="Username (Ex: ravi)">
+        <input type="text" id="username" placeholder="Username (e.g. manas)">
         <input type="password" id="password" placeholder="Password">
         
-        <button class="btn" onclick="login()">Login</button>
+        <button class="btn" onclick="login()">Login Securely</button>
     </div>
 
     <div class="bottom-links">
@@ -49,22 +49,30 @@
     </div>
 
     <script>
+        // Yahan humne sahi link lagaya hai (/api/employee-login)
+        const LOGIN_URL = "https://motion-banswara-portal.onrender.com/api/employee-login";
+
         async function login() {
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value.trim();
             const btn = document.querySelector('.btn');
 
-            if(!user || !pass) return alert("Details bharein!");
-            btn.textContent = "Checking...";
+            if(!user || !pass) return alert("Username aur Password bharein!");
+            
+            btn.textContent = "Connecting...";
+            btn.disabled = true;
             
             try {
-                const res = await fetch('https://motion-banswara-portal.onrender.com/api', {
+                console.log("Sending request to:", LOGIN_URL);
+                
+                const res = await fetch(LOGIN_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username: user, password: pass })
                 });
 
                 const data = await res.json();
+                console.log("Response:", data);
 
                 if (data.success) {
                     localStorage.setItem('empName', data.name);
@@ -77,12 +85,15 @@
                         window.location.href = "employee_panel.html"; 
                     }
                 } else {
-                    alert("❌ गलत Username या Password");
-                    btn.textContent = "Login";
+                    alert("❌ Login Failed: " + (data.error || "Galat ID/Password"));
+                    btn.textContent = "Try Again";
+                    btn.disabled = false;
                 }
             } catch (err) {
-                alert("Server Error. Check Backend.");
+                console.error(err);
+                alert("❌ Server Error! Check Internet or Backend URL.");
                 btn.textContent = "Login";
+                btn.disabled = false;
             }
         }
     </script>
