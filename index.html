@@ -58,7 +58,7 @@
             btn.textContent = "Checking...";
             
             try {
-                const res = await fetch('http://localhost:5000/api/employee-login', {
+                const res = await fetch('https://motion-banswara-portal.onrender.com/api', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username: user, password: pass })
