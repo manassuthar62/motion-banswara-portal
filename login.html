@@ -3,60 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Login</title>
+    <title>Employee Login - Motion Banswara</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Poppins', sans-serif; background: #f0f2f5; display: flex; height: 100vh; justify-content: center; align-items: center; flex-direction: column; }
-        .card { background: white; padding: 2rem; border-radius: 10px; width: 350px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-        .btn { width: 100%; padding: 10px; background: #4361ee; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .link { display: block; margin-top: 15px; color: #666; text-decoration: none; font-size: 0.9rem; }
+        body {
+            margin: 0; padding: 0; font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            height: 100vh; display: flex; justify-content: center; align-items: center; flex-direction: column;
+        }
+        .login-card {
+            background: white; padding: 2.5rem; border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 100%; max-width: 380px; text-align: center;
+        }
+        h2 { color: #333; margin-bottom: 0.5rem; }
+        p { color: #666; margin-bottom: 2rem; font-size: 0.9rem; }
+        input {
+            width: 100%; padding: 12px; margin-bottom: 1rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; outline: none; box-sizing: border-box;
+        }
+        input:focus { border-color: #4361ee; }
+        .btn {
+            width: 100%; padding: 12px; background: #4361ee; color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .btn:hover { background: #3f37c9; }
+        
+        .bottom-links { margin-top: 2rem; text-align: center; }
+        .bottom-links a { display: block; color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.9rem; margin-bottom: 5px; transition: 0.3s; }
+        .bottom-links a:hover { color: white; text-decoration: underline; }
     </style>
 </head>
 <body>
-    <div class="card">
+
+    <div class="login-card">
         <h2>👋 Staff Login</h2>
-        <p>Field Staff & Office Team</p>
-        <input type="text" id="username" placeholder="Username">
+        <p>Field Staff & Office Team Login</p>
+        
+        <input type="text" id="username" placeholder="Username (e.g. manas)">
         <input type="password" id="password" placeholder="Password">
-        <button class="btn" onclick="login()">Login</button>
+        
+        <button class="btn" onclick="login()">Login Securely</button>
     </div>
-    <a href="admin.html" class="link">Go to Admin Login</a>
+
+    <div class="bottom-links">
+        <a href="admin.html">🔒 Admin Login</a>
+        <a href="viewer_login.html">👁️ Observer Login</a>
+    </div>
 
     <script>
+        // Yahan humne sahi link lagaya hai (/api/employee-login)
+        const LOGIN_URL = "https://motion-banswara-portal.onrender.com/api/employee-login";
+
         async function login() {
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value.trim();
             const btn = document.querySelector('.btn');
 
-            if(!user || !pass) return alert("Enter details");
-            btn.textContent = "Checking...";
-
+            if(!user || !pass) return alert("Username aur Password bharein!");
+            
+            btn.textContent = "Connecting...";
+            btn.disabled = true;
+            
             try {
-                const res = await fetch('https://motion-banswara-portal.onrender.com/api/employee-login'...), {
+                console.log("Sending request to:", LOGIN_URL);
+                
+                const res = await fetch(LOGIN_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username: user, password: pass })
                 });
 
                 const data = await res.json();
+                console.log("Response:", data);
 
                 if (data.success) {
                     localStorage.setItem('empName', data.name);
-                    localStorage.setItem('empRole', data.role); // Role Save kiya
+                    localStorage.setItem('empRole', data.role);
                     localStorage.setItem('isEmpLoggedIn', 'true');
 
-                    // YAHAN HAI MAGIC LOGIC
                     if (data.role === 'filler') {
-                        window.location.href = "filler_panel.html"; // Filler ke liye alag page
+                        window.location.href = "filler_panel.html"; 
                     } else {
-                        window.location.href = "employee_panel.html"; // Field staff ke liye alag page
+                        window.location.href = "employee_panel.html"; 
                     }
                 } else {
-                    alert("❌ Wrong ID/Password");
-                    btn.textContent = "Login";
+                    alert("❌ Login Failed: " + (data.error || "Galat ID/Password"));
+                    btn.textContent = "Try Again";
+                    btn.disabled = false;
                 }
-            } catch (err) { alert("Server Error"); btn.textContent = "Login"; }
+            } catch (err) {
+                console.error(err);
+                alert("❌ Server Error! Check Internet or Backend URL.");
+                btn.textContent = "Login";
+                btn.disabled = false;
+            }
         }
     </script>
 </body>
