@@ -4,133 +4,85 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Filling Team Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #6c5ce7; --primary-dark: #5b4bc4;
-            --bg: #f4f7fc; --white: #ffffff;
+            --primary: #6c5ce7; --bg: #f0f2f5; --white: #fff;
             --success: #00b894; --warning: #f1c40f; --danger: #ff7675; --dark: #2d3436;
-            --card-shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
-        
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: var(--bg); color: var(--dark); padding-bottom: 3rem; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); padding: 2rem; color: var(--dark); }
         
         /* NAVBAR */
-        .navbar {
-            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
-            padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 20px rgba(108, 92, 231, 0.2); position: sticky; top: 0; z-index: 100;
-        }
-        .brand { font-size: 1.5rem; font-weight: 700; color: white; display: flex; align-items: center; gap: 10px; }
-        .user-pill { background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 50px; color: white; font-weight: 500; display: flex; align-items: center; gap: 8px; }
-        .logout-btn { background: #ff7675; border: none; padding: 8px 20px; color: white; border-radius: 50px; cursor: pointer; font-weight: 600; transition: 0.3s; box-shadow: 0 4px 10px rgba(255, 118, 117, 0.3); }
-        .logout-btn:hover { background: #d63031; transform: translateY(-2px); }
-
-        .container { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; animation: fadeIn 0.6s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* STATS CARDS */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
-        .stat-card {
-            background: white; padding: 1.5rem; border-radius: 15px; box-shadow: var(--card-shadow);
-            display: flex; align-items: center; gap: 20px; transition: transform 0.3s; border-bottom: 4px solid transparent;
-        }
-        .stat-card:hover { transform: translateY(-5px); }
-        .stat-icon { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
+        .navbar { background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%); color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; border-radius: 10px; margin-bottom: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .navbar h2 { font-size: 1.5rem; display: flex; align-items: center; gap: 10px; margin: 0; }
         
-        .st-total { border-color: var(--primary); } .st-total .stat-icon { background: #e0e7ff; color: var(--primary); }
+        /* STATS CARDS */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem; }
+        .stat-card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 15px; border-bottom: 4px solid transparent; }
+        .stat-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
         .st-pending { border-color: var(--warning); } .st-pending .stat-icon { background: #fff3cd; color: #f39c12; }
         .st-done { border-color: var(--success); } .st-done .stat-icon { background: #d1fae5; color: var(--success); }
+        .st-total { border-color: var(--primary); } .st-total .stat-icon { background: #e0e7ff; color: var(--primary); }
+        .stat-info h3 { font-size: 1.8rem; margin: 0; color: #333; }
+        .stat-info p { margin: 0; color: #666; font-size: 0.9rem; }
+
+        /* HEADINGS */
+        .section-title { font-size: 1.3rem; color: #333; margin-bottom: 1.5rem; border-left: 5px solid var(--primary); padding-left: 10px; font-weight: 600; }
+
+        /* TASK GRID (ACTIVE) */
+        .task-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; margin-bottom: 3rem; } /* Single column for detailed view */
         
-        .stat-info h3 { font-size: 2rem; margin: 0; color: var(--dark); font-weight: 700; }
-        .stat-info p { margin: 0; color: #888; font-size: 0.9rem; font-weight: 500; text-transform: uppercase; }
-
-        /* SECTION TITLE */
-        .section-header { display: flex; align-items: center; margin-bottom: 1.5rem; gap: 10px; }
-        .section-header h3 { font-size: 1.5rem; color: var(--dark); margin: 0; }
-        .badge-count { background: var(--primary); color: white; padding: 2px 10px; border-radius: 10px; font-size: 0.9rem; }
-
-        /* ACTIVE TASK CARD (The Main Part) */
-        .task-grid { display: grid; gap: 2rem; }
+        .task-card { background: white; border-radius: 12px; padding: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee; overflow: hidden; }
         
-        .task-card {
-            background: white; border-radius: 15px; box-shadow: var(--card-shadow); overflow: hidden; border: 1px solid #eee;
-        }
-        .task-header {
-            background: #fdfdfd; padding: 1.2rem 2rem; border-bottom: 1px solid #eee;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .task-header h3 { margin: 0; color: var(--primary); font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
-        .status-pill { background: #fff3cd; color: #f39c12; padding: 5px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
-
-        .task-body { padding: 2rem; }
+        .task-header { background: #f8f9fa; padding: 1rem 1.5rem; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .task-header h3 { font-size: 1.2rem; color: var(--primary); margin: 0; font-weight: 600; }
+        
+        .task-body { padding: 1.5rem; }
         
         /* Data Grid inside Card */
-        .data-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2rem; }
+        .data-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 1.5rem; }
         
-        .info-section h4 { 
-            color: var(--primary); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px; 
-            border-bottom: 2px solid #f0f0f0; padding-bottom: 8px; margin-bottom: 15px; 
-        }
-        .info-row { 
-            display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.95rem; 
-            border-bottom: 1px dashed #eee; padding-bottom: 5px; 
-        }
-        .info-row span { color: #666; display: flex; align-items: center; gap: 8px; }
-        .info-row b { color: #2d3436; font-weight: 600; }
+        .info-group h4 { color: var(--primary); font-size: 0.95rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #f0f0f0; padding-bottom: 5px; }
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; border-bottom: 1px dashed #eee; padding-bottom: 4px; }
+        .info-row span { color: #666; }
+        .info-row b { color: #333; font-weight: 600; }
 
         /* Document Buttons */
-        .doc-area { display: flex; gap: 15px; margin-bottom: 20px; }
-        .btn-doc { 
-            flex: 1; text-decoration: none; padding: 12px; border-radius: 8px; color: white; 
-            font-weight: 500; text-align: center; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
-        .doc-mark { background: #0984e3; box-shadow: 0 4px 10px rgba(9, 132, 227, 0.2); }
-        .doc-mark:hover { background: #0769b5; transform: translateY(-2px); }
-        .doc-inc { background: #00b894; box-shadow: 0 4px 10px rgba(0, 184, 148, 0.2); }
-        .doc-inc:hover { background: #009174; transform: translateY(-2px); }
+        .doc-section { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .btn-doc { flex: 1; text-decoration: none; text-align: center; padding: 10px; border-radius: 6px; color: white; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; }
+        .btn-doc.mark { background: #0984e3; } .btn-doc.mark:hover { background: #0769b5; }
+        .btn-doc.inc { background: #00b894; } .btn-doc.inc:hover { background: #009174; }
 
-        /* Action Footer */
-        .task-footer { background: #f8f9fa; padding: 1.5rem 2rem; border-top: 1px solid #eee; }
-        .remark-input { 
-            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; 
-            margin-bottom: 15px; font-family: inherit; outline: none; transition: 0.3s;
-        }
-        .remark-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1); }
-
-        .action-btns { display: flex; gap: 15px; }
-        .btn-action { 
-            flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; 
-            cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; color: white;
-        }
-        .btn-done { background: linear-gradient(to right, #00b894, #00cec9); box-shadow: 0 4px 15px rgba(0, 184, 148, 0.3); }
-        .btn-done:hover { transform: translateY(-2px); }
-        .btn-fail { background: linear-gradient(to right, #ff7675, #d63031); box-shadow: 0 4px 15px rgba(255, 118, 117, 0.3); }
-        .btn-fail:hover { transform: translateY(-2px); }
+        /* Action Area */
+        .action-area { background: #fdfdfd; padding: 1.5rem; border-top: 1px solid #eee; }
+        .remark-input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-family: inherit; }
+        
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
+        .btn { flex: 1; padding: 12px; border: none; border-radius: 6px; cursor: pointer; color: white; font-weight: 600; font-size: 1rem; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-complete { background: var(--success); } .btn-complete:hover { background: #009174; }
+        .btn-reject { background: var(--danger); } .btn-reject:hover { background: #e64c65; }
 
         /* HISTORY TABLE */
-        .table-wrapper { background: white; border-radius: 15px; padding: 1.5rem; box-shadow: var(--card-shadow); overflow-x: auto; }
+        .table-card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; min-width: 800px; }
-        th { text-align: left; padding: 15px; background: #f1f2f6; color: #666; font-weight: 600; }
-        td { padding: 15px; border-bottom: 1px solid #eee; vertical-align: middle; }
-        
-        .badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
-        .b-Completed { background: #d1fae5; color: #00b894; }
-        .b-Rejected { background: #fef2f2; color: #d63031; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+        th { background: #f8f9fa; color: #555; font-weight: 600; }
+        .badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+        .b-Completed { background: #d1fae5; color: #047857; }
+        .b-Rejected { background: #fee2e2; color: #b91c1c; }
+        .b-Assigned { background: #dbeafe; color: #2563eb; }
 
-        .empty-state { text-align: center; padding: 4rem; color: #aaa; }
-        .empty-state i { font-size: 3rem; margin-bottom: 10px; color: #ddd; }
+        .empty-state { text-align: center; padding: 3rem; color: #888; font-style: italic; background: white; border-radius: 10px; }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="brand"><i class="fa-solid fa-laptop-code"></i> Motion Filling Portal</div>
-        <div style="display: flex; gap: 10px; align-items: center;">
-            <div class="user-pill"><i class="fa-regular fa-user"></i> <span id="userName">User</span></div>
-            <button onclick="logout()" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i></button>
+        <h2><i class="fa-solid fa-laptop-code"></i> Filling Team Panel</h2>
+        <div>
+            <span id="userName" style="margin-right:15px; font-weight:600;">User</span>
+            <button onclick="logout()" style="background:rgba(255,255,255,0.2); border:1px solid white; padding:5px 15px; color:white; cursor:pointer; border-radius:5px;">Logout</button>
         </div>
     </nav>
 
@@ -138,32 +90,26 @@
         
         <div class="stats-grid">
             <div class="stat-card st-total">
-                <div class="stat-icon"><i class="fa-solid fa-layer-group"></i></div>
+                <div class="stat-icon"><i class="fa-solid fa-folder-open"></i></div>
                 <div class="stat-info"><h3 id="cTotal">0</h3><p>Total Assigned</p></div>
             </div>
             <div class="stat-card st-pending">
-                <div class="stat-icon"><i class="fa-solid fa-hourglass-start"></i></div>
+                <div class="stat-icon"><i class="fa-solid fa-hourglass-half"></i></div>
                 <div class="stat-info"><h3 id="cPen">0</h3><p>Active Tasks</p></div>
             </div>
             <div class="stat-card st-done">
-                <div class="stat-icon"><i class="fa-solid fa-check-circle"></i></div>
+                <div class="stat-icon"><i class="fa-solid fa-check-double"></i></div>
                 <div class="stat-info"><h3 id="cComp">0</h3><p>Completed</p></div>
             </div>
         </div>
 
-        <div class="section-header">
-            <h3>⚡ Active Tasks</h3>
-            <span class="badge-count" id="badgeCount">0</span>
-        </div>
-
+        <h3 class="section-title">⚡ Your Active Tasks</h3>
         <div id="taskGrid" class="task-grid">
-            <div style="text-align:center; padding:2rem;">⏳ Loading your tasks...</div>
+            <div style="padding:2rem; text-align:center;">Loading tasks...</div>
         </div>
 
-        <div class="section-header" style="margin-top: 3rem;">
-            <h3>📂 Work History</h3>
-        </div>
-        <div class="table-wrapper">
+        <h3 class="section-title">📂 Work History</h3>
+        <div class="table-card">
             <table>
                 <thead>
                     <tr>
@@ -175,7 +121,7 @@
                     </tr>
                 </thead>
                 <tbody id="historyBody">
-                    <tr><td colspan="5" style="text-align:center; padding:20px;">Loading...</td></tr>
+                    <tr><td colspan="5" style="text-align:center;">Loading history...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -190,94 +136,93 @@
         if(localStorage.getItem('isEmpLoggedIn') !== 'true' || localStorage.getItem('empRole') !== 'filler') {
             window.location.href = "index.html";
         }
-        document.getElementById('userName').innerText = fillerName;
+        document.getElementById('userName').innerText = "Hello, " + fillerName;
 
         async function loadTasks() {
             try {
                 const res = await fetch(`${API_URL}/filler-tasks/${fillerName}`);
                 const tasks = await res.json();
 
+                // Separate Active vs History
                 const activeTasks = tasks.filter(t => t.status === 'Assigned');
                 const historyTasks = tasks.filter(t => t.status === 'Completed' || t.status === 'Rejected');
 
-                // Update Stats
+                // Update Counts
                 document.getElementById('cTotal').innerText = tasks.length;
                 document.getElementById('cPen').innerText = activeTasks.length;
                 document.getElementById('cComp').innerText = historyTasks.filter(t => t.status === 'Completed').length;
-                document.getElementById('badgeCount').innerText = activeTasks.length;
 
                 // Render Active Grid
                 const grid = document.getElementById('taskGrid');
                 if(activeTasks.length === 0) {
-                    grid.innerHTML = `<div class="empty-state"><i class="fa-solid fa-mug-hot"></i><p>No pending tasks! Good job.</p></div>`;
+                    grid.innerHTML = `<div class="empty-state">🎉 No pending tasks! You are all caught up.</div>`;
                 } else {
                     grid.innerHTML = activeTasks.map(t => `
                         <div class="task-card">
                             <div class="task-header">
-                                <h3><i class="fa-solid fa-user-graduate"></i> ${t.studentName}</h3>
-                                <span class="status-pill"><i class="fa-solid fa-spinner"></i> Pending</span>
+                                <h3>${t.studentName}</h3>
+                                <span class="badge b-${t.status}">${t.status}</span>
                             </div>
                             
                             <div class="task-body">
-                                <div class="data-layout">
-                                    <div class="info-section">
+                                <div class="data-grid">
+                                    <div class="info-group">
                                         <h4>👤 Personal Details</h4>
-                                        <div class="info-row"><span>Father</span> <b>${t.fatherName}</b></div>
-                                        <div class="info-row"><span>Mother</span> <b>${t.motherName}</b></div>
-                                        <div class="info-row"><span><i class="fa-solid fa-cake-candles"></i> DOB</span> <b>${t.dob || '-'}</b></div>
-                                        <div class="info-row"><span>Category</span> <b>${t.category || '-'}</b></div>
-                                        <div class="info-row"><span>Income</span> <b>₹${t.familyIncome}</b></div>
+                                        <div class="info-row"><span>Father Name:</span> <b>${t.fatherName}</b></div>
+                                        <div class="info-row"><span>Mother Name:</span> <b>${t.motherName}</b></div>
+                                        <div class="info-row"><span>DOB:</span> <b>${t.dob || '-'}</b></div>
+                                        <div class="info-row"><span>Category:</span> <b>${t.category || '-'}</b></div>
+                                        <div class="info-row"><span>Income:</span> <b>₹${t.familyIncome}</b></div>
                                     </div>
                                     
-                                    <div class="info-section">
+                                    <div class="info-group">
                                         <h4>📞 Contact & IDs</h4>
-                                        <div class="info-row"><span><i class="fa-solid fa-phone"></i> Mobile</span> <b>${t.mobile}</b></div>
-                                        <div class="info-row"><span>Alt. Mobile</span> <b>${t.altMobile || '-'}</b></div>
-                                        <div class="info-row"><span>SSO ID</span> <b>${t.ssoId}</b></div>
-                                        <div class="info-row"><span><i class="fa-solid fa-key"></i> Password</span> <b>${t.password || '-'}</b></div>
-                                        <div class="info-row"><span>Jan Aadhar</span> <b>${t.janAadhar || '-'}</b></div>
+                                        <div class="info-row"><span>Mobile:</span> <b>${t.mobile}</b></div>
+                                        <div class="info-row"><span>Alt. Mobile:</span> <b>${t.altMobile || '-'}</b></div>
+                                        <div class="info-row"><span>SSO ID:</span> <b>${t.ssoId}</b></div>
+                                        <div class="info-row"><span>Password:</span> <b>${t.password || '-'}</b></div>
+                                        <div class="info-row"><span>Jan Aadhar:</span> <b>${t.janAadhar || '-'}</b></div>
                                     </div>
 
-                                    <div class="info-section">
+                                    <div class="info-group">
                                         <h4>🎓 Academic Info</h4>
-                                        <div class="info-row"><span>School</span> <b>${t.school}</b></div>
-                                        <div class="info-row"><span>Roll No</span> <b>${t.rollNumber}</b></div>
-                                        <div class="info-row"><span>Percent</span> <b>${t.percentage}%</b></div>
-                                        <div class="info-row"><span>Year</span> <b>${t.passingYear}</b></div>
-                                        <div class="info-row"><span>Course</span> <b style="color:var(--primary);">${t.course}</b></div>
+                                        <div class="info-row"><span>School:</span> <b>${t.school}</b></div>
+                                        <div class="info-row"><span>Roll No:</span> <b>${t.rollNumber}</b></div>
+                                        <div class="info-row"><span>Percentage:</span> <b>${t.percentage}%</b></div>
+                                        <div class="info-row"><span>Pass Year:</span> <b>${t.passingYear}</b></div>
+                                        <div class="info-row"><span>Course:</span> <b>${t.course}</b></div>
                                     </div>
                                 </div>
 
                                 <div class="doc-section">
-                                    <a href="${t.marksheet10th}" download target="_blank" class="btn-doc doc-mark"><i class="fa-solid fa-file-arrow-down"></i> 10th Marksheet</a>
-                                    <a href="${t.incomeProof}" download target="_blank" class="btn-doc doc-inc"><i class="fa-solid fa-file-invoice-dollar"></i> Income Certificate</a>
+                                    <a href="${t.marksheet10th}" download="${t.studentName}_10th" class="btn-doc mark"><i class="fa-solid fa-file-pdf"></i> Download 10th Marksheet</a>
+                                    <a href="${t.incomeProof}" download="${t.studentName}_Income" class="btn-doc inc"><i class="fa-solid fa-file-invoice-dollar"></i> Download Income Cert</a>
                                 </div>
                             </div>
 
-                            <div class="task-footer">
-                                <input type="text" id="remark-${t._id}" class="remark-input" placeholder="✍️ Add a remark (Optional for Success, Required for Reject)...">
-                                
-                                <div class="action-btns">
-                                    <button onclick="updateStatus('${t._id}', 'Completed')" class="btn-action btn-done"><i class="fa-solid fa-check-circle"></i> Mark Completed</button>
-                                    <button onclick="updateStatus('${t._id}', 'Rejected')" class="btn-action btn-fail"><i class="fa-solid fa-ban"></i> Reject Task</button>
+                            <div class="action-area">
+                                <input type="text" id="remark-${t._id}" class="remark-input" placeholder="Enter Remark (Optional for completion, Required for rejection)...">
+                                <div class="btn-group">
+                                    <button onclick="updateStatus('${t._id}', 'Completed')" class="btn btn-complete"><i class="fa-solid fa-check"></i> Mark as Completed</button>
+                                    <button onclick="updateStatus('${t._id}', 'Rejected')" class="btn btn-reject"><i class="fa-solid fa-xmark"></i> Reject Task</button>
                                 </div>
                             </div>
                         </div>
                     `).join('');
                 }
 
-                // Render History
+                // Render History Table
                 const tbody = document.getElementById('historyBody');
                 if(historyTasks.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="5" align="center" style="padding:20px; color:#888;">No history available.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="5" align="center" style="padding:20px; color:#888;">No history yet.</td></tr>`;
                 } else {
                     tbody.innerHTML = historyTasks.map(t => `
                         <tr>
-                            <td><b>${t.studentName}</b><br><small style="color:#888;">${t.ssoId}</small></td>
-                            <td><span style="background:#eef2ff; color:#4361ee; padding:2px 8px; border-radius:5px; font-weight:600; font-size:0.8rem;">${t.course}</span></td>
+                            <td><b>${t.studentName}</b><br><small>${t.ssoId}</small></td>
+                            <td>${t.course}</td>
                             <td>${t.mobile}</td>
                             <td><span class="badge b-${t.status}">${t.status}</span></td>
-                            <td style="color:#666; font-style:italic;">${t.adminRemark || '-'}</td>
+                            <td>${t.adminRemark || '-'}</td>
                         </tr>
                     `).join('');
                 }
@@ -287,15 +232,15 @@
 
         async function updateStatus(id, status) {
             const remark = document.getElementById(`remark-${id}`).value;
-            if(status === 'Rejected' && !remark) return alert("⚠️ Please write a remark for rejection!");
+            if(status === 'Rejected' && !remark) return alert("Remark is required for rejection!");
 
             await fetch(`${API_URL}/update-status/${id}`, {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ status, remark })
             });
-            alert(status === 'Completed' ? "🎉 Task Completed!" : "Task Rejected.");
-            loadTasks();
+            alert("Status Updated!");
+            loadTasks(); // Reload to move from Active to History
         }
 
         function logout() { localStorage.clear(); window.location.href = "index.html"; }
