@@ -1,131 +1,312 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login - Motion Banswara</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Yantramanav:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Yantramanav:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        body {
-            margin: 0; padding: 0; font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            height: 100vh; display: flex; justify-content: center; align-items: center; flex-direction: column;
+        /* --- RESET & BASE STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
 
-        /* --- HEADER STYLE (Updated) --- */
-        .welcome-header {
+        body {
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Background Shapes for Glass Effect */
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.6;
+        }
+        .shape-1 {
+            top: -50px; left: -50px; width: 300px; height: 300px;
+            background: #ff9966;  /* Orange/Gold accent */
+        }
+        .shape-2 {
+            bottom: -50px; right: -50px; width: 350px; height: 350px;
+            background: #2193b0; /* Cyan accent */
+        }
+
+        /* --- MAIN CARD DESIGN --- */
+        .login-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 420px;
             text-align: center;
-            margin-bottom: 2rem;
-            animation: fadeInDown 1s ease-out;
+            color: #fff;
+            animation: slideUp 0.8s ease forwards;
         }
-        .welcome-header h1 {
-            font-family: 'Yantramanav', sans-serif;
-            font-size: 3.5rem;
-            font-weight: 900;
-            margin: 0;
-            line-height: 1.1;
-            text-transform: uppercase;
-            background: linear-gradient(to right, #fff 0%, #ffd700 50%, #fff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            letter-spacing: 2px;
-        }
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-30px); }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* CARD STYLE */
-        .login-card {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 2.5rem; border-radius: 15px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3); width: 100%; max-width: 400px; text-align: center;
-            backdrop-filter: blur(10px);
+        /* --- TYPOGRAPHY --- */
+        .branding h1 {
+            font-family: 'Yantramanav', sans-serif;
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            background: linear-gradient(to right, #ffd700, #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        h2 { color: #333; margin-bottom: 1.5rem; font-size: 1.5rem; }
-        .form-group { margin-bottom: 1.2rem; text-align: left; }
-        label { display: block; margin-bottom: 0.5rem; color: #555; font-size: 0.9rem; font-weight: 600; }
-        input {
-            width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; outline: none; transition: 0.3s; box-sizing: border-box;
+        .branding p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+            letter-spacing: 1px;
         }
-        input:focus { border-color: #1e3c72; box-shadow: 0 0 8px rgba(30, 60, 114, 0.2); }
-        
-        .btn {
-            width: 100%; padding: 12px; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 1rem; transition: 0.3s;
-        }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(30, 60, 114, 0.4); }
-        .links { margin-top: 1rem; font-size: 0.9rem; }
-        .links a { color: #1e3c72; text-decoration: none; cursor: pointer; font-weight: 500; }
-        .hidden { display: none; }
-        .error { color: red; font-size: 0.85rem; margin-top: 0.5rem; display: none; background: #ffe6e6; padding: 5px; border-radius: 4px; }
 
-        /* Bottom Links Section */
-        .bottom-links { 
-            margin-top: 2rem; 
-            text-align: center; 
-            width: 100%; 
-            max-width: 400px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 10px; 
+        h2 {
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            font-size: 1.4rem;
         }
-        .link-btn { 
-            display: block; 
-            color: rgba(255,255,255,0.9); 
-            text-decoration: none; 
-            font-size: 0.95rem; 
-            padding: 10px 20px; 
-            border-radius: 30px; 
-            border: 1px solid rgba(255,255,255,0.3);
-            transition: 0.3s; 
-            background: rgba(255,255,255,0.1);
-            font-weight: 500;
+
+        /* --- INPUT FIELDS --- */
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+            text-align: left;
         }
-        .link-btn:hover { 
-            background: white; 
-            color: #1e3c72; 
-            transform: translateX(5px); 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+            margin-left: 5px;
+            opacity: 0.9;
         }
+        .input-wrapper {
+            position: relative;
+        }
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #fff;
+            font-size: 1rem;
+        }
+        input {
+            width: 100%;
+            padding: 12px 15px 12px 45px; /* Space for icon */
+            border: none;
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 30px;
+            color: #fff;
+            font-size: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: 0.3s;
+        }
+        input::placeholder { color: rgba(255, 255, 255, 0.6); }
+        input:focus {
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* --- BUTTONS --- */
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(90deg, #ffb347 0%, #ffcc33 100%); /* Gold/Orange */
+            color: #2c3e50;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 179, 71, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 179, 71, 0.5);
+        }
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            margin-top: 10px;
+            box-shadow: none;
+        }
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* --- UTILS --- */
+        .links { margin-top: 1.2rem; font-size: 0.9rem; }
+        .links a { color: #ffd700; text-decoration: none; cursor: pointer; transition: 0.2s; }
+        .links a:hover { text-decoration: underline; color: #fff; }
         
-        /* Colored Borders for Identification */
-        .field-staff { border-left: 5px solid #2ed573; }
-        .form-filler { border-left: 5px solid #ffa502; }
-        .observer { border-left: 5px solid #11998e; }
+        .hidden { display: none; }
+        
+        .error {
+            background: rgba(255, 77, 77, 0.2);
+            border: 1px solid rgba(255, 77, 77, 0.5);
+            color: #ffcccc;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            display: none;
+            animation: shake 0.3s ease-in-out;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* --- BOTTOM LINKS SECTION --- */
+        .bottom-links {
+            margin-top: 2rem;
+            width: 90%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            animation: fadeIn 1.2s ease forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .link-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            border-radius: 15px;
+            text-decoration: none;
+            color: white;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-left: 5px solid transparent;
+            transition: 0.3s;
+            backdrop-filter: blur(5px);
+        }
+        .link-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+        .link-btn i { font-size: 1.1rem; }
+
+        /* Color Coding */
+        .field-staff { border-color: #2ed573; }
+        .form-filler { border-color: #ffa502; }
+        .observer { border-color: #11998e; }
+
+        /* --- MOBILE RESPONSIVE TWEAKS --- */
+        @media (max-width: 480px) {
+            .branding h1 { font-size: 1.5rem; }
+            .login-card { padding: 1.5rem; margin-top: 20px;}
+            .btn { font-size: 0.9rem; }
+            .shape { display: none; /* Hide shapes on very small screens for performance */ }
+        }
     </style>
 </head>
 <body>
 
-    <div class="welcome-header">
-        <!-- <h1>MOTION EDUCATION <br> BANSWARA</h1> -->
-    </div>
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
 
     <div class="login-card">
+        <div class="branding">
+            <h1>Motion Banswara</h1>
+            <p>Anuprati Scheme Portal</p>
+        </div>
+
         <div id="loginForm">
-            <h2>🔐 Admin Login</h2>
-            <div class="form-group"><label>Username</label><input type="text" id="username" placeholder="admin"></div>
-            <div class="form-group"><label>Password</label><input type="password" id="password" placeholder="Password"></div>
-            <div id="loginError" class="error">Invalid Credentials!</div>
-            <button class="btn" onclick="checkLogin()">Secure Login</button>
+            <h2><i class="fas fa-user-shield"></i> Admin Login</h2>
+            
+            <div id="loginError" class="error"><i class="fas fa-exclamation-circle"></i> Invalid Credentials!</div>
+
+            <div class="input-group">
+                <label>Username</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="username" placeholder="Enter Admin ID">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Password</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" placeholder="Enter Password">
+                </div>
+            </div>
+
+            <button class="btn" onclick="checkLogin()">Login Now <i class="fas fa-arrow-right"></i></button>
             <div class="links"><a onclick="showForgot()">Forgot Password?</a></div>
         </div>
 
         <div id="forgotForm" class="hidden">
-            <h2>🔑 Reset Password</h2>
-            <div class="form-group"><label>Secret Code</label><input type="password" id="secretKey" placeholder="Ex: motion2025"></div>
-            <div class="form-group"><label>New Password</label><input type="text" id="newPassword" placeholder="New Password"></div>
-            <div id="resetError" class="error">Invalid Secret Code!</div>
+            <h2><i class="fas fa-key"></i> Reset Password</h2>
+            
+            <div id="resetError" class="error"><i class="fas fa-times-circle"></i> Invalid Secret Code!</div>
+
+            <div class="input-group">
+                <label>Secret Code</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-shield-alt"></i>
+                    <input type="password" id="secretKey" placeholder="Enter Secret Key">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>New Password</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-unlock-alt"></i>
+                    <input type="text" id="newPassword" placeholder="New Password">
+                </div>
+            </div>
+
             <button class="btn" onclick="resetPassword()">Reset Password</button>
-            <div class="links"><a onclick="showLogin()">Back to Login</a></div>
+            <button class="btn btn-secondary" onclick="showLogin()">Back</button>
         </div>
     </div>
 
     <div class="bottom-links">
-        <a href="employee_panel.html" class="link-btn field-staff">👋 Field Staff Login (Data Entry)</a>
-        <a href="login.html" class="link-btn form-filler">💻 Form Filling Team Login</a>
-        <a href="viewer_login.html" class="link-btn observer">👁️ Observer Login (View Only)</a>
+        <a href="employee_panel.html" class="link-btn field-staff">
+            <span>Field Staff Login</span> <i class="fas fa-walking"></i>
+        </a>
+        <a href="login.html" class="link-btn form-filler">
+            <span>Form Filling Team</span> <i class="fas fa-laptop-code"></i>
+        </a>
+        <a href="viewer_login.html" class="link-btn observer">
+            <span>Observer Login</span> <i class="fas fa-eye"></i>
+        </a>
     </div>
 
     <script>
@@ -136,29 +317,49 @@
             const user = document.getElementById('username').value;
             const pass = document.getElementById('password').value;
             const savedPass = localStorage.getItem('adminPass') || DEFAULT_PASS;
+            const errorDiv = document.getElementById('loginError');
 
             if (user === "admin" && pass === savedPass) {
-                localStorage.setItem('isLoggedIn', 'true');
-                window.location.href = "dashboard.html"; 
+                // Success Animation before redirect
+                const btn = document.querySelector('.btn');
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+                btn.style.background = '#2ed573';
+                
+                setTimeout(() => {
+                    localStorage.setItem('isLoggedIn', 'true');
+                    window.location.href = "dashboard.html"; 
+                }, 1000);
             } else {
-                document.getElementById('loginError').style.display = 'block';
+                errorDiv.style.display = 'block';
+                // Shake animation reset
+                errorDiv.style.animation = 'none';
+                errorDiv.offsetHeight; /* trigger reflow */
+                errorDiv.style.animation = null; 
             }
         }
 
         function resetPassword() {
             const key = document.getElementById('secretKey').value;
             const newPass = document.getElementById('newPassword').value;
+            const errorDiv = document.getElementById('resetError');
+
             if (key === SECRET_KEY) {
                 localStorage.setItem('adminPass', newPass);
                 alert("✅ Password Changed Successfully!");
                 showLogin();
             } else {
-                document.getElementById('resetError').style.display = 'block';
+                errorDiv.style.display = 'block';
             }
         }
 
-        function showForgot() { document.getElementById('loginForm').classList.add('hidden'); document.getElementById('forgotForm').classList.remove('hidden'); }
-        function showLogin() { document.getElementById('forgotForm').classList.add('hidden'); document.getElementById('loginForm').classList.remove('hidden'); }
+        function showForgot() { 
+            document.getElementById('loginForm').classList.add('hidden'); 
+            document.getElementById('forgotForm').classList.remove('hidden'); 
+        }
+        function showLogin() { 
+            document.getElementById('forgotForm').classList.add('hidden'); 
+            document.getElementById('loginForm').classList.remove('hidden'); 
+        }
         
         document.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
