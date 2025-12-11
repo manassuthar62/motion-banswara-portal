@@ -1,61 +1,212 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Login - Motion Banswara</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Team Login - Motion Banswara</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+
         body {
-            margin: 0; padding: 0; font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            height: 100vh; display: flex; justify-content: center; align-items: center; flex-direction: column;
+            background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%); /* Purple-Blue Gradient for Staff */
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
         }
+
+        /* Decorative Shapes */
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(70px);
+            z-index: -1;
+            opacity: 0.5;
+        }
+        .shape-1 { top: -60px; left: -60px; width: 300px; height: 300px; background: #00b09b; } /* Green */
+        .shape-2 { bottom: -60px; right: -60px; width: 350px; height: 350px; background: #96c93d; } /* Lime */
+
+        /* Login Card */
         .login-card {
-            background: white; padding: 2.5rem; border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 100%; max-width: 380px; text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            color: white;
+            animation: fadeInUp 0.8s ease forwards;
         }
-        h2 { color: #333; margin-bottom: 0.5rem; }
-        p { color: #666; margin-bottom: 2rem; font-size: 0.9rem; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 { font-size: 1.8rem; margin-bottom: 5px; font-weight: 700; }
+        p { font-size: 0.9rem; opacity: 0.8; margin-bottom: 2rem; letter-spacing: 0.5px; }
+
+        /* Inputs */
+        .input-group {
+            position: relative;
+            margin-bottom: 1.2rem;
+        }
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 1rem;
+            opacity: 0.8;
+        }
         input {
-            width: 100%; padding: 12px; margin-bottom: 1rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; outline: none; box-sizing: border-box;
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
         }
-        input:focus { border-color: #4361ee; }
+        input::placeholder { color: rgba(255, 255, 255, 0.6); }
+        input:focus {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #fff;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Button */
         .btn {
-            width: 100%; padding: 12px; background: #4361ee; color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: 0.3s;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%); /* Green Gradient for Action */
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+            box-shadow: 0 5px 15px rgba(17, 153, 142, 0.3);
         }
-        .btn:hover { background: #3f37c9; }
-        
-        .bottom-links { margin-top: 2rem; text-align: center; }
-        .bottom-links a { display: block; color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.9rem; margin-bottom: 5px; transition: 0.3s; }
-        .bottom-links a:hover { color: white; text-decoration: underline; }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(17, 153, 142, 0.4);
+        }
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        /* Error Message */
+        .error {
+            background: rgba(255, 71, 87, 0.2);
+            border: 1px solid rgba(255, 71, 87, 0.5);
+            color: #ffcccc;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        /* Footer Links */
+        .bottom-links {
+            margin-top: 2rem;
+            text-align: center;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        .link-pill {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: 0.3s;
+            border: 1px solid transparent;
+        }
+        .link-pill:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        @media (max-width: 480px) {
+            .login-card { padding: 2rem; width: 85%; }
+            h2 { font-size: 1.5rem; }
+        }
     </style>
 </head>
 <body>
 
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+
     <div class="login-card">
-        <h2>👋 Employee Login</h2>
-        <p>अपना काम शुरू करने के लिए लॉगिन करें</p>
+        <div style="margin-bottom: 1.5rem;">
+            <i class="fa-solid fa-users-gear" style="font-size: 3rem; color: #38ef7d;"></i>
+        </div>
+        <h2>Employee Login</h2>
+        <p>Motion Education Banswara</p>
         
-        <input type="text" id="username" placeholder="Username (Ex: ravi)">
-        <input type="password" id="password" placeholder="Password">
+        <div id="loginError" class="error"><i class="fa-solid fa-circle-exclamation"></i> Incorrect Username or Password</div>
+
+        <div class="input-group">
+            <i class="fa-solid fa-user"></i>
+            <input type="text" id="username" placeholder="Username (e.g. ravi)">
+        </div>
+
+        <div class="input-group">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="password" placeholder="Password">
+        </div>
         
-        <button class="btn" onclick="login()">Login</button>
+        <button class="btn" onclick="login()" id="loginBtn">
+            Login Now <i class="fa-solid fa-arrow-right"></i>
+        </button>
     </div>
 
     <div class="bottom-links">
-        <a href="admin.html">🔒 Admin Login</a>
-        <a href="viewer_login.html">👁️ Observer Login</a>
+        <a href="admin.html" class="link-pill"><i class="fa-solid fa-shield-halved"></i> Admin</a>
+        <a href="viewer_login.html" class="link-pill"><i class="fa-solid fa-eye"></i> Observer</a>
     </div>
 
     <script>
         async function login() {
             const user = document.getElementById('username').value;
             const pass = document.getElementById('password').value;
-            const btn = document.querySelector('.btn');
+            const btn = document.getElementById('loginBtn');
+            const errorDiv = document.getElementById('loginError');
 
-            if(!user || !pass) return alert("Details bharein!");
-            btn.textContent = "Checking...";
+            // Reset Error
+            errorDiv.style.display = 'none';
+
+            if(!user || !pass) {
+                errorDiv.innerText = "Please fill in all fields!";
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            // Button Loading State
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Checking...';
+            btn.disabled = true;
             
             try {
                 const res = await fetch('https://motion-banswara-portal.onrender.com/api/employee-login', {
@@ -67,24 +218,42 @@
                 const data = await res.json();
 
                 if (data.success) {
+                    // Success!
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Success!';
+                    btn.style.background = '#2ed573';
+                    
                     localStorage.setItem('empName', data.name);
                     localStorage.setItem('empRole', data.role);
                     localStorage.setItem('isEmpLoggedIn', 'true');
 
-                    if (data.role === 'filler') {
-                        window.location.href = "filler_panel.html"; 
-                    } else {
-                        window.location.href = "employee_panel.html"; 
-                    }
+                    // Redirect based on ROLE
+                    setTimeout(() => {
+                        if (data.role === 'filler') {
+                            window.location.href = "filler_panel.html"; 
+                        } else {
+                            window.location.href = "employee_panel.html"; 
+                        }
+                    }, 800);
                 } else {
-                    alert("❌ गलत Username या Password");
-                    btn.textContent = "Login";
+                    // Fail
+                    throw new Error("Invalid Credentials");
                 }
             } catch (err) {
-                alert("Server Error. Check Backend.");
-                btn.textContent = "Login";
+                // Error Handling
+                errorDiv.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Invalid Username or Password';
+                errorDiv.style.display = 'block';
+                
+                // Reset Button
+                btn.innerHTML = 'Login Now <i class="fa-solid fa-arrow-right"></i>';
+                btn.disabled = false;
+                btn.style.background = 'linear-gradient(90deg, #11998e 0%, #38ef7d 100%)';
             }
         }
+        
+        // Enter Key Support
+        document.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') login();
+        });
     </script>
 </body>
 </html>
