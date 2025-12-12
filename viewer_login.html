@@ -1,54 +1,264 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Observer Login - Motion Banswara</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+
         body {
-            margin: 0; font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); /* Green Theme for Viewer */
-            height: 100vh; display: flex; justify-content: center; align-items: center;
+            /* Calm Aqua/Green Gradient for Observation Mode */
+            background: linear-gradient(135deg, #134E5E 0%, #71B280 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
         }
+
+        /* Abstract Shapes */
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.6;
+            animation: move 8s infinite alternate;
+        }
+        .b1 { top: -10%; left: -10%; width: 300px; height: 300px; background: #a8ff78; border-radius: 40% 60% 70% 30%; }
+        .b2 { bottom: -10%; right: -10%; width: 350px; height: 350px; background: #78ffd6; border-radius: 60% 40% 30% 70%; }
+
+        @keyframes move {
+            from { transform: translate(0, 0) rotate(0deg); }
+            to { transform: translate(20px, 20px) rotate(10deg); }
+        }
+
+        /* Glass Card */
         .login-card {
-            background: white; padding: 2.5rem; border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 100%; max-width: 380px; text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 380px;
+            text-align: center;
+            color: white;
+            animation: fadeIn 0.8s ease-out;
         }
-        h2 { color: #333; margin-bottom: 0.5rem; }
-        p { color: #666; font-size: 0.9rem; margin-bottom: 1.5rem; }
-        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-        .btn { width: 100%; padding: 12px; background: #11998e; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
-        .btn:hover { background: #0e857b; }
-        .back-link { display: block; margin-top: 15px; color: white; text-decoration: none; font-size: 0.9rem; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Typography */
+        h2 { font-size: 1.8rem; margin-bottom: 5px; font-weight: 700; letter-spacing: 0.5px; }
+        p { font-size: 0.9rem; margin-bottom: 2rem; opacity: 0.9; color: #e0f2f1; }
+        
+        .icon-header {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: #a8ff78;
+            text-shadow: 0 0 15px rgba(168, 255, 120, 0.4);
+        }
+
+        /* Input Fields */
+        .input-group {
+            position: relative;
+            margin-bottom: 1.2rem;
+        }
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            opacity: 0.8;
+        }
+        input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+        input::placeholder { color: rgba(255, 255, 255, 0.6); }
+        input:focus {
+            background: rgba(0, 0, 0, 0.25);
+            border-color: #a8ff78;
+            box-shadow: 0 0 10px rgba(168, 255, 120, 0.2);
+        }
+
+        /* Button */
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(56, 239, 125, 0.3);
+        }
+
+        /* Footer */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 25px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: 0.3s;
+            backdrop-filter: blur(5px);
+        }
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+        }
+
+        /* Error Message */
+        .error {
+            color: #ff8a80;
+            background: rgba(255, 0, 0, 0.1);
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            display: none;
+            border: 1px solid rgba(255, 138, 128, 0.3);
+        }
+
+        /* Mobile Tweaks */
+        @media (max-width: 480px) {
+            .login-card { padding: 2rem; width: 85%; }
+            h2 { font-size: 1.5rem; }
+        }
     </style>
 </head>
 <body>
 
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+
     <div class="login-card">
-        <h2>👁️ Observer Login</h2>
-        <p>View-Only Access (No Editing)</p>
+        <div class="icon-header">
+            <i class="fa-solid fa-eye"></i>
+        </div>
+        <h2>Observer Access</h2>
+        <p>Guest / View-Only Mode</p>
         
-        <input type="text" id="username" placeholder="Username (guest)">
-        <input type="password" id="password" placeholder="Password">
+        <div id="loginError" class="error"><i class="fa-solid fa-triangle-exclamation"></i> Incorrect ID or Password</div>
+
+        <div class="input-group">
+            <i class="fa-solid fa-user-tag"></i>
+            <input type="text" id="username" placeholder="Guest ID">
+        </div>
+
+        <div class="input-group">
+            <i class="fa-solid fa-key"></i>
+            <input type="password" id="password" placeholder="Access Code">
+        </div>
         
-        <button class="btn" onclick="login()">Access Dashboard</button>
+        <button class="btn" onclick="login()" id="loginBtn">Enter Dashboard</button>
     </div>
 
-    <a href="admin.html" class="back-link">← Back to Main Page</a>
+    <a href="admin.html" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i> Back to Main
+    </a>
 
     <script>
         function login() {
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value.trim();
+            const btn = document.getElementById('loginBtn');
+            const errorDiv = document.getElementById('loginError');
 
-            // Simple ID/Pass for Guest
-            if (user === "guest" && pass === "guest123") {
-                localStorage.setItem('isViewerLoggedIn', 'true');
-                window.location.href = "viewer_dashboard.html";
-            } else {
-                alert("❌ Access Denied!");
+            // Reset UI
+            errorDiv.style.display = 'none';
+
+            if (!user || !pass) {
+                errorDiv.innerText = "Please enter details!";
+                errorDiv.style.display = 'block';
+                return;
             }
+
+            // Simulate Loading
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Verifying...';
+            btn.style.opacity = '0.8';
+
+            setTimeout(() => {
+                // Hardcoded Guest Credentials
+                if (user === "guest" && pass === "guest123") {
+                    localStorage.setItem('isViewerLoggedIn', 'true');
+                    
+                    // Success UI
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Access Granted';
+                    btn.style.background = '#00b894';
+                    
+                    setTimeout(() => {
+                        window.location.href = "viewer_dashboard.html";
+                    }, 500);
+                } else {
+                    // Error UI
+                    errorDiv.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Access Denied!';
+                    errorDiv.style.display = 'block';
+                    
+                    // Shake Animation
+                    const card = document.querySelector('.login-card');
+                    card.style.animation = 'none';
+                    card.offsetHeight; /* trigger reflow */
+                    card.style.animation = 'shake 0.3s';
+
+                    // Reset Button
+                    btn.innerHTML = 'Enter Dashboard';
+                    btn.style.opacity = '1';
+                    btn.style.background = 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)';
+                }
+            }, 800); // 800ms delay for realism
         }
+
+        // Add shake keyframes dynamically
+        const styleSheet = document.createElement("style");
+        styleSheet.innerText = `
+            @keyframes shake {
+                0% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                50% { transform: translateX(5px); }
+                75% { transform: translateX(-5px); }
+                100% { transform: translateX(0); }
+            }
+        `;
+        document.head.appendChild(styleSheet);
+        
+        // Enter key support
+        document.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') login();
+        });
     </script>
 </body>
 </html>
