@@ -1,70 +1,215 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Login - Motion Banswara</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Staff Login - Motion Banswara</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
         body {
-            margin: 0; padding: 0; font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            height: 100vh; display: flex; justify-content: center; align-items: center; flex-direction: column;
+            /* Teal to Blue Gradient for Staff Energy */
+            background: linear-gradient(135deg, #1A2980 0%, #26D0CE 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
         }
+
+        /* Floating Background Shapes */
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            z-index: -1;
+            animation: float 6s ease-in-out infinite;
+        }
+        .c1 { width: 200px; height: 200px; top: -50px; left: -50px; background: rgba(38, 208, 206, 0.4); }
+        .c2 { width: 250px; height: 250px; bottom: -50px; right: -50px; background: rgba(26, 41, 128, 0.4); }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(20px); }
+        }
+
+        /* Glass Card */
         .login-card {
-            background: white; padding: 2.5rem; border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 100%; max-width: 380px; text-align: center;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 3rem 2rem;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            color: white;
+            animation: slideUp 0.8s ease forwards;
         }
-        h2 { color: #333; margin-bottom: 0.5rem; }
-        p { color: #666; margin-bottom: 2rem; font-size: 0.9rem; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Icon & Header */
+        .header-icon {
+            font-size: 3rem;
+            background: linear-gradient(to right, #fff, #a8ff78);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        h2 { font-size: 1.8rem; font-weight: 600; margin-bottom: 5px; }
+        p { font-size: 0.9rem; color: rgba(255,255,255,0.8); margin-bottom: 2rem; }
+
+        /* Inputs */
+        .input-box {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        .input-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 1.1rem;
+        }
         input {
-            width: 100%; padding: 12px; margin-bottom: 1rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; outline: none; box-sizing: border-box;
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
         }
-        input:focus { border-color: #4361ee; }
+        input::placeholder { color: rgba(255, 255, 255, 0.6); }
+        input:focus {
+            background: rgba(0, 0, 0, 0.3);
+            border-color: #26D0CE;
+            box-shadow: 0 0 15px rgba(38, 208, 206, 0.3);
+        }
+
+        /* Button */
         .btn {
-            width: 100%; padding: 12px; background: #4361ee; color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: 0.3s;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #11998e, #38ef7d);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
-        .btn:hover { background: #3f37c9; }
-        
-        .bottom-links { margin-top: 2rem; text-align: center; }
-        .bottom-links a { display: block; color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.9rem; margin-bottom: 5px; transition: 0.3s; }
-        .bottom-links a:hover { color: white; text-decoration: underline; }
+        .btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(56, 239, 125, 0.4);
+        }
+        .btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        /* Links */
+        .bottom-links {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .link-item {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 8px 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+        .link-item:hover {
+            background: white;
+            color: #1A2980;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .alert-error { background: rgba(255, 71, 87, 0.2); border: 1px solid #ff4757; color: #ffcccb; }
+
     </style>
 </head>
 <body>
 
+    <div class="circle c1"></div>
+    <div class="circle c2"></div>
+
     <div class="login-card">
-        <h2>👋 Staff Login</h2>
-        <p>Field Staff & Office Team Login</p>
-        
-        <input type="text" id="username" placeholder="Username (e.g. manas)">
-        <input type="password" id="password" placeholder="Password">
-        
-        <button class="btn" onclick="login()">Login Securely</button>
+        <div class="header-icon">
+            <i class="fa-solid fa-id-card-clip"></i>
+        </div>
+        <h2>Staff Login</h2>
+        <p>Field Staff & Office Team Portal</p>
+
+        <div id="errorMsg" class="alert alert-error"></div>
+
+        <div class="input-box">
+            <i class="fa-solid fa-user"></i>
+            <input type="text" id="username" placeholder="Username">
+        </div>
+
+        <div class="input-box">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="password" placeholder="Password">
+        </div>
+
+        <button class="btn" onclick="login()" id="loginBtn">Login Securely</button>
     </div>
 
     <div class="bottom-links">
-        <a href="admin.html">🔒 Admin Login</a>
-        <a href="viewer_login.html">👁️ Observer Login</a>
+        <a href="admin.html" class="link-item"><i class="fa-solid fa-shield-halved"></i> Admin</a>
+        <a href="viewer_login.html" class="link-item"><i class="fa-solid fa-eye"></i> Observer</a>
     </div>
 
     <script>
-        // Yahan humne sahi link lagaya hai (/api/employee-login)
         const LOGIN_URL = "https://motion-banswara-portal.onrender.com/api/employee-login";
 
         async function login() {
             const user = document.getElementById('username').value.trim();
             const pass = document.getElementById('password').value.trim();
-            const btn = document.querySelector('.btn');
+            const btn = document.getElementById('loginBtn');
+            const errorBox = document.getElementById('errorMsg');
 
-            if(!user || !pass) return alert("Username aur Password bharein!");
-            
-            btn.textContent = "Connecting...";
+            // Clear previous errors
+            errorBox.style.display = 'none';
+
+            if(!user || !pass) {
+                showError("⚠️ Please enter Username and Password");
+                return;
+            }
+
+            // Loading State
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Connecting...';
             btn.disabled = true;
-            
+            btn.style.background = '#555';
+
             try {
-                console.log("Sending request to:", LOGIN_URL);
-                
                 const res = await fetch(LOGIN_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -72,30 +217,60 @@
                 });
 
                 const data = await res.json();
-                console.log("Response:", data);
 
                 if (data.success) {
+                    // Success Animation
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Success!';
+                    btn.style.background = '#2ed573';
+
+                    // Save Data
                     localStorage.setItem('empName', data.name);
                     localStorage.setItem('empRole', data.role);
                     localStorage.setItem('isEmpLoggedIn', 'true');
 
-                    if (data.role === 'filler') {
-                        window.location.href = "filler_panel.html"; 
-                    } else {
-                        window.location.href = "employee_panel.html"; 
-                    }
+                    // Redirect logic
+                    setTimeout(() => {
+                        if (data.role === 'filler') {
+                            window.location.href = "filler_panel.html"; 
+                        } else {
+                            window.location.href = "employee_panel.html"; 
+                        }
+                    }, 1000);
+
                 } else {
-                    alert("❌ Login Failed: " + (data.error || "Galat ID/Password"));
-                    btn.textContent = "Try Again";
-                    btn.disabled = false;
+                    throw new Error(data.error || "Invalid Username or Password");
                 }
             } catch (err) {
                 console.error(err);
-                alert("❌ Server Error! Check Internet or Backend URL.");
-                btn.textContent = "Login";
+                showError("❌ " + (err.message || "Server Error"));
+                
+                // Reset Button
+                btn.innerHTML = 'Login Securely';
                 btn.disabled = false;
+                btn.style.background = 'linear-gradient(90deg, #11998e, #38ef7d)';
             }
         }
+
+        function showError(msg) {
+            const errorBox = document.getElementById('errorMsg');
+            errorBox.innerText = msg;
+            errorBox.style.display = 'block';
+            // Shake animation
+            const card = document.querySelector('.login-card');
+            card.style.animation = 'none'; 
+            card.offsetHeight; /* trigger reflow */
+            card.style.animation = 'shake 0.3s';
+        }
     </script>
+
+    <style>
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+    </style>
 </body>
 </html>
