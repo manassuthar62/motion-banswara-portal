@@ -185,6 +185,8 @@
     <script>
         const API_URL = "https://motion-banswara-portal.onrender.com/api";
         const fillerName = localStorage.getItem('empName');
+        const fillerUsername = localStorage.getItem('empUsername') || fillerName;
+        let refreshHandle = null;
 
         // Security Check
         if(localStorage.getItem('isEmpLoggedIn') !== 'true' || localStorage.getItem('empRole') !== 'filler') {
@@ -194,7 +196,7 @@
 
         async function loadTasks() {
             try {
-                const res = await fetch(`${API_URL}/filler-tasks/${fillerName}`);
+                const res = await fetch(`${API_URL}/filler-tasks/${encodeURIComponent(fillerUsername)}`);
                 const tasks = await res.json();
 
                 const activeTasks = tasks.filter(t => t.status === 'Assigned');
@@ -299,7 +301,11 @@
         }
 
         function logout() { localStorage.clear(); window.location.href = "index.html"; }
-        
+
+        window.addEventListener('focus', loadTasks);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) loadTasks(); });
+        refreshHandle = setInterval(loadTasks, 10000);
+
         loadTasks();
     </script>
 </body>

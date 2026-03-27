@@ -48,7 +48,7 @@ async function findDuplicateStudent({ studentName, fatherName }, excludeId = nul
 // 1. Unified Login (Role Batayega)
 app.post('/api/employee-login', async (req, res) => {
     const user = await Employee.findOne(req.body);
-    if (user) res.json({ success: true, name: user.name, role: user.role }); // Role bhej rahe hain
+    if (user) res.json({ success: true, name: user.name, username: user.username, role: user.role }); // Role bhej rahe hain
     else res.status(401).json({ error: "Fail" });
 });
 
@@ -147,7 +147,19 @@ app.put('/api/update-status/:id', async (req, res) => {
 
 // Get tasks for specific Filler
 app.get('/api/filler-tasks/:username', async (req, res) => {
-    const tasks = await Student.find({ assignedTo: req.params.username });
+    const requestedUser = req.params.username;
+    const employee = await Employee.findOne({
+        $or: [
+            { username: requestedUser },
+            { name: requestedUser }
+        ]
+    }).select('username');
+
+    const lookupValues = employee?.username && employee.username !== requestedUser
+        ? [requestedUser, employee.username]
+        : [requestedUser];
+
+    const tasks = await Student.find({ assignedTo: { $in: lookupValues } });
     res.json(tasks);
 });
 

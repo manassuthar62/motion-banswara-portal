@@ -223,6 +223,7 @@
                     btn.style.background = '#2ed573';
                     
                     localStorage.setItem('empName', data.name);
+                    localStorage.setItem('empUsername', data.username || user);
                     localStorage.setItem('empRole', data.role);
                     localStorage.setItem('isEmpLoggedIn', 'true');
 
