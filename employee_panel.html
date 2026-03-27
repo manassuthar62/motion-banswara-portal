@@ -9,116 +9,597 @@
 
     <style>
         :root {
-            --primary: #4361ee; --light-bg: #f3f4f6; --white: #ffffff;
-            --text-dark: #1f2937; --text-light: #6b7280;
-            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --bg: #f4efe8;
+            --surface: rgba(255,255,255,0.88);
+            --surface-solid: #ffffff;
+            --line: rgba(30, 41, 59, 0.10);
+            --text: #16202b;
+            --muted: #6c7787;
+            --brand: #c6622c;
+            --brand-dark: #95441a;
+            --blue: #2d6cdf;
+            --green: #1b9c6b;
+            --red: #d14b4b;
+            --amber: #c98a19;
+            --shadow: 0 24px 60px rgba(22, 32, 43, 0.08);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: var(--light-bg); color: var(--text-dark); padding-bottom: 3rem; }
-
-        /* NAVBAR */
-        .navbar {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            padding: 1rem 2rem; color: white; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100;
+        body {
+            min-height: 100vh;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(198,98,44,0.16), transparent 24%),
+                radial-gradient(circle at top right, rgba(45,108,223,0.10), transparent 20%),
+                linear-gradient(180deg, #f7f2eb 0%, #f1ece5 100%);
+            padding-bottom: 40px;
         }
-        .brand { font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-        .user-name { font-weight: 500; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; margin-right: 10px; }
-        .logout-btn { background: #ff4757; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; }
-        .logout-btn:hover { background: #ff6b81; transform: translateY(-2px); }
+        button, input, select { font: inherit; }
 
-        .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; animation: slideUp 0.5s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 28px;
+            color: #fff;
+            background: linear-gradient(135deg, #1b2027 0%, #2d3641 45%, #b65a28 100%);
+            box-shadow: 0 14px 32px rgba(22, 32, 43, 0.16);
+        }
+        .brand { display: flex; align-items: center; gap: 14px; font-size: 1.25rem; font-weight: 700; letter-spacing: .01em; }
+        .brand-badge {
+            width: 46px;
+            height: 46px;
+            border-radius: 16px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #f08a4d, #c65321);
+            box-shadow: 0 12px 24px rgba(198,98,44,0.32);
+        }
+        .nav-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .user-name {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.16);
+            font-weight: 500;
+        }
+        .logout-btn {
+            border: none;
+            cursor: pointer;
+            padding: 10px 16px;
+            border-radius: 14px;
+            background: rgba(209,75,75,0.18);
+            color: #fff;
+            font-weight: 600;
+            transition: transform .2s ease, background .2s ease;
+        }
+        .logout-btn:hover { transform: translateY(-1px); background: rgba(209,75,75,0.28); }
 
-        /* --- UPDATED STATS CARDS --- */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .stat-box { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 15px; border-bottom: 4px solid transparent; transition: transform 0.3s; }
-        .stat-box:hover { transform: translateY(-5px); }
-        .stat-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
-        .stat-info h3 { font-size: 1.8rem; margin: 0; color: var(--text-dark); line-height: 1; }
-        .stat-info p { font-size: 0.9rem; color: var(--text-light); margin: 5px 0 0 0; font-weight: 500; }
+        .container {
+            max-width: 1320px;
+            margin: 28px auto 0;
+            padding: 0 20px;
+            animation: slideUp 0.45s ease-out;
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Colors */
-        .sb-pending { border-color: #f1c40f; } .sb-pending .stat-icon { background: #fff3cd; color: #f39c12; }
-        .sb-assigned { border-color: #3498db; } .sb-assigned .stat-icon { background: #dbeafe; color: #2980b9; }
-        .sb-completed { border-color: #2ecc71; } .sb-completed .stat-icon { background: #d1fae5; color: #27ae60; }
-        .sb-rejected { border-color: #e74c3c; } .sb-rejected .stat-icon { background: #fce4ec; color: #c0392b; }
+        .hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.3fr) minmax(280px, .7fr);
+            gap: 18px;
+            margin-bottom: 20px;
+            align-items: start;
+        }
+        .hero-card,
+        .hero-note,
+        .card {
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+        }
+        .hero-card {
+            padding: 28px;
+            border-radius: 30px;
+            color: #fff;
+            background:
+                radial-gradient(circle at 88% 16%, rgba(255,255,255,0.20), transparent 14%),
+                linear-gradient(145deg, #1c1c1c 0%, #28221f 44%, #b45a28 100%);
+        }
+        .eyebrow {
+            display: inline-block;
+            margin-bottom: 14px;
+            font-size: .74rem;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.64);
+        }
+        .hero-card h1 { font-size: clamp(2rem, 3vw, 3.1rem); line-height: 1.02; margin-bottom: 12px; }
+        .hero-card p { max-width: 680px; line-height: 1.7; color: rgba(255,255,255,0.78); }
+        .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+        .hero-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: #fff;
+            font-weight: 600;
+        }
+        .hero-note {
+            padding: 24px;
+            border-radius: 28px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.82));
+            display: grid;
+            gap: 14px;
+            align-content: start;
+        }
+        .hero-note h3 { font-size: 1.14rem; }
+        .hero-note p { color: var(--muted); line-height: 1.65; font-size: .94rem; }
+        .hero-summary {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 18px;
+        }
+        .hero-summary-card {
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.10);
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+        .hero-summary-card span {
+            display: block;
+            font-size: .72rem;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.58);
+            margin-bottom: 7px;
+        }
+        .hero-summary-card strong {
+            display: block;
+            font-size: 1.55rem;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+        .hero-summary-card small {
+            display: block;
+            color: rgba(255,255,255,0.72);
+            font-size: .84rem;
+            line-height: 1.5;
+        }
+        .note-list { display: grid; gap: 10px; }
+        .note-item {
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: #faf6f1;
+            border: 1px solid rgba(198,98,44,0.12);
+        }
+        .note-item strong { display: block; margin-bottom: 4px; font-size: .98rem; }
+        .note-item span { color: var(--muted); font-size: .88rem; }
 
-        /* CARD & FORM */
-        .card { background: var(--white); border-radius: 15px; padding: 2rem; box-shadow: var(--shadow); margin-bottom: 2rem; }
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
-        .card-header h2 { font-size: 1.5rem; color: var(--text-dark); }
-        
-        .form-section-title { color: var(--primary); font-size: 1.1rem; font-weight: 600; margin: 1.5rem 0 1rem 0; display: flex; align-items: center; gap: 8px; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.2rem; }
-        .input-group label { display: block; font-size: 0.9rem; font-weight: 500; margin-bottom: 5px; color: var(--text-dark); }
-        .input-box { width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 8px; outline: none; background: #f9fafb; }
-        .input-box:focus { border-color: var(--primary); background: white; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-bottom: 20px; }
+        .stat-box {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(255,255,255,0.82));
+            padding: 22px;
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .stat-box::after {
+            content: "";
+            position: absolute;
+            top: -36px;
+            right: -34px;
+            width: 112px;
+            height: 112px;
+            border-radius: 999px;
+            opacity: .9;
+        }
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
+            display: grid;
+            place-items: center;
+            font-size: 1.24rem;
+            flex-shrink: 0;
+        }
+        .stat-info h3 { font-size: 2rem; line-height: 1; margin-bottom: 6px; }
+        .stat-info p { font-size: .84rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; }
+        .sb-pending::after { background: rgba(201,138,25,0.11); } .sb-pending .stat-icon { background: rgba(201,138,25,0.14); color: var(--amber); }
+        .sb-assigned::after { background: rgba(45,108,223,0.10); } .sb-assigned .stat-icon { background: rgba(45,108,223,0.12); color: var(--blue); }
+        .sb-completed::after { background: rgba(27,156,107,0.12); } .sb-completed .stat-icon { background: rgba(27,156,107,0.12); color: var(--green); }
+        .sb-rejected::after { background: rgba(209,75,75,0.10); } .sb-rejected .stat-icon { background: rgba(209,75,75,0.12); color: var(--red); }
+
+        .panel-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(320px, .8fr);
+            gap: 20px;
+            align-items: stretch;
+            margin-bottom: 20px;
+        }
+        .card {
+            background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.84));
+            border-radius: 28px;
+            padding: 24px;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .card-header h2 {
+            font-size: 1.28rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+        .card-header p { color: var(--muted); font-size: .92rem; }
+        .cancel-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 14px;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            background: #fff;
+            color: var(--text);
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .form-section {
+            margin-bottom: 20px;
+            padding: 18px;
+            border-radius: 22px;
+            background: rgba(248,241,234,0.58);
+            border: 1px solid rgba(198,98,44,0.10);
+        }
+        .form-section-title {
+            color: var(--brand-dark);
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+        .input-group label {
+            display: block;
+            font-size: .84rem;
+            font-weight: 600;
+            margin-bottom: 7px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+        }
+        .input-box {
+            width: 100%;
+            padding: 14px 15px;
+            border: 1px solid rgba(30,41,59,0.10);
+            border-radius: 16px;
+            outline: none;
+            background: rgba(255,255,255,0.94);
+            color: var(--text);
+            transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+        }
+        .input-box:focus {
+            border-color: rgba(198,98,44,0.38);
+            box-shadow: 0 0 0 4px rgba(198,98,44,0.10);
+            background: #fff;
+        }
         .input-box.duplicate { border-color: #dc2626; background: #fff7f7; }
-        .file-box { border: 2px dashed #cbd5e1; padding: 15px; border-radius: 8px; text-align: center; background: #f8fafc; cursor: pointer; }
-        .btn-submit { width: 100%; padding: 14px; background: linear-gradient(to right, #4361ee, #3f37c9); color: white; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1.5rem; }
-        .btn-update { background: linear-gradient(to right, #f59e0b, #d97706); }
-        .duplicate-alert { display: none; margin-top: 1rem; padding: 12px 14px; border-radius: 10px; background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; font-size: 0.9rem; }
+        .duplicate-alert {
+            display: none;
+            margin-top: 14px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+            font-size: .92rem;
+        }
         .duplicate-alert.show { display: block; }
 
-        /* TABLE */
-        .table-responsive { overflow-x: auto; border-radius: 10px; border: 1px solid #e5e7eb; }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #f3f4f6; color: var(--text-dark); font-weight: 600; padding: 15px; text-align: left; }
-        td { padding: 15px; border-bottom: 1px solid #e5e7eb; color: var(--text-dark); font-size: 0.9rem; }
-        
-        .status-badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
-        .st-Pending { background: #fff7ed; color: #c2410c; }
-        .st-Assigned { background: #dbeafe; color: #2563eb; } /* New Color for Assigned */
-        .st-Completed { background: #ecfdf5; color: #047857; }
-        .st-Rejected { background: #fef2f2; color: #b91c1c; }
+        .docs-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+        .file-box {
+            position: relative;
+            border: 1px dashed rgba(45,108,223,0.26);
+            padding: 18px;
+            border-radius: 18px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(241,246,255,0.88));
+        }
+        .file-box label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: var(--text);
+            font-weight: 600;
+        }
+        .file-box input[type="file"] {
+            width: 100%;
+            font-size: .92rem;
+            color: var(--muted);
+        }
 
-        .btn-edit { background: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 0.8rem; }
-        .remark-alert { font-size: 0.85rem; color: #b91c1c; background: #fff1f2; padding: 5px 10px; border-radius: 5px; margin-top: 5px; display: inline-block; }
+        .btn-submit {
+            width: 100%;
+            margin-top: 18px;
+            padding: 15px 18px;
+            border: none;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #be5e29, #d87939);
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 18px 30px rgba(190,94,41,0.24);
+        }
+        .btn-submit:disabled { opacity: .65; cursor: not-allowed; }
+        .btn-update { background: linear-gradient(135deg, #b77b10, #d89a22); box-shadow: 0 18px 30px rgba(183,123,16,0.22); }
+
+        .side-card {
+            padding: 22px;
+            border-radius: 28px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.82));
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            display: grid;
+            grid-template-rows: auto auto 1fr auto;
+            gap: 16px;
+            height: 100%;
+            min-height: 100%;
+        }
+        .side-card h3 { font-size: 1.14rem; }
+        .side-card p { color: var(--muted); line-height: 1.65; font-size: .92rem; }
+        .mini-list { display: grid; gap: 12px; }
+        .mini-item {
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: #faf7f2;
+            border: 1px solid rgba(198,98,44,0.12);
+        }
+        .mini-item strong { display: block; margin-bottom: 5px; font-size: .95rem; }
+        .mini-item span { color: var(--muted); font-size: .88rem; line-height: 1.55; }
+        .side-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .side-stat {
+            padding: 14px 15px;
+            border-radius: 18px;
+            background: #f7f2eb;
+            border: 1px solid rgba(198,98,44,0.12);
+        }
+        .side-stat span {
+            display: block;
+            margin-bottom: 7px;
+            font-size: .72rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .side-stat strong {
+            display: block;
+            font-size: 1.35rem;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+        .side-stat small {
+            display: block;
+            color: var(--muted);
+            font-size: .82rem;
+            line-height: 1.45;
+        }
+        .side-footer {
+            padding: 16px 18px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(22,32,43,0.96), rgba(182,90,40,0.90));
+            color: #fff;
+        }
+        .side-footer strong {
+            display: block;
+            margin-bottom: 6px;
+            font-size: .98rem;
+        }
+        .side-footer p {
+            color: rgba(255,255,255,0.76);
+            font-size: .88rem;
+            line-height: 1.6;
+        }
+
+        .table-card { margin-top: 4px; }
+        .table-responsive {
+            overflow: auto;
+            border-radius: 22px;
+            border: 1px solid var(--line);
+            background: rgba(255,255,255,0.92);
+        }
+        table { width: 100%; border-collapse: collapse; min-width: 760px; }
+        th {
+            padding: 16px 18px;
+            text-align: left;
+            background: #f6efe6;
+            color: #677283;
+            font-size: .76rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+        }
+        td {
+            padding: 18px;
+            border-bottom: 1px solid var(--line);
+            color: var(--text);
+            font-size: .92rem;
+            vertical-align: top;
+        }
+        tbody tr:hover { background: rgba(246,239,230,0.35); }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: .74rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+        }
+        .st-Pending { background: rgba(201,138,25,0.14); color: var(--amber); }
+        .st-Assigned { background: rgba(45,108,223,0.12); color: var(--blue); }
+        .st-Completed { background: rgba(27,156,107,0.12); color: var(--green); }
+        .st-Rejected { background: rgba(209,75,75,0.12); color: var(--red); }
+        .btn-edit {
+            border: none;
+            cursor: pointer;
+            padding: 10px 14px;
+            border-radius: 14px;
+            background: rgba(45,108,223,0.10);
+            color: var(--blue);
+            font-weight: 700;
+        }
+        .remark-alert {
+            margin-top: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 12px;
+            background: #fff1f2;
+            color: #b91c1c;
+            font-size: .82rem;
+        }
+
+        @media (max-width: 1120px) {
+            .hero,
+            .panel-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .side-card { grid-template-rows: auto; height: auto; }
+        }
+        @media (max-width: 760px) {
+            .navbar { padding: 16px; flex-direction: column; align-items: flex-start; }
+            .nav-right { width: 100%; justify-content: space-between; }
+            .container { padding: 0 12px; margin-top: 18px; }
+            .hero-card,
+            .hero-note,
+            .card,
+            .side-card { border-radius: 24px; padding: 18px; }
+            .stats-grid,
+            .form-grid,
+            .docs-grid,
+            .hero-summary,
+            .side-stats { grid-template-columns: 1fr; }
+            .card-header { flex-direction: column; align-items: stretch; }
+            .hero-actions { flex-direction: column; }
+            table { min-width: 660px; }
+        }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="brand"><i class="fa-solid fa-graduation-cap"></i> Motion Employee</div>
-        <div>
+        <div class="brand">
+            <div class="brand-badge"><i class="fa-solid fa-file-signature"></i></div>
+            <div>Motion Field Desk</div>
+        </div>
+        <div class="nav-right">
             <span class="user-name"><i class="fa-regular fa-user"></i> <span id="empNameDisplay">User</span></span>
-            <button onclick="logout()" class="logout-btn">Logout</button>
+            <button onclick="logout()" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
         </div>
     </nav>
 
     <div class="container">
+        <section class="hero">
+            <div class="hero-card">
+                <div class="eyebrow">Field Officer Workspace</div>
+                <h1>Student application entry panel</h1>
+                <p>New application submit karein, rejected forms ko resubmit karein, aur apne record status ko isi panel se track karein.</p>
+                <div class="hero-actions">
+                    <div class="hero-pill"><i class="fa-solid fa-shield-check"></i> Duplicate warning active</div>
+                    <div class="hero-pill"><i class="fa-solid fa-clock-rotate-left"></i> Submission history available</div>
+                </div>
+                <div class="hero-summary">
+                    <div class="hero-summary-card">
+                        <span>Pending</span>
+                        <strong id="heroPendingCount">0</strong>
+                        <small>Admin review ke liye wait kar rahe records</small>
+                    </div>
+                    <div class="hero-summary-card">
+                        <span>Assigned</span>
+                        <strong id="heroAssignedCount">0</strong>
+                        <small>Filling ya processing stage me chal rahe records</small>
+                    </div>
+                    <div class="hero-summary-card">
+                        <span>Completed</span>
+                        <strong id="heroCompletedCount">0</strong>
+                        <small>Successfully closed aur ready records</small>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-note">
+                <h3>Working Notes</h3>
+                <p>Form fill karte waqt required fields complete rakhein. Duplicate alert aate hi same record dobara submit na karein.</p>
+                <div class="note-list">
+                    <div class="note-item"><strong>Before submit</strong><span>Student name aur father name verify karein.</span></div>
+                    <div class="note-item"><strong>Rejected cases</strong><span>Edit button se record kholkar required correction ke saath dubara bhejein.</span></div>
+                    <div class="note-item"><strong>Documents</strong><span>Marksheet aur income proof upload karne par review fast hota hai.</span></div>
+                </div>
+            </div>
+        </section>
         
         <div class="stats-grid">
             <div class="stat-box sb-pending">
                 <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
-                <div class="stat-info"><h3 id="countPending">0</h3><p>Pending (Admin)</p></div>
+                <div class="stat-info"><h3 id="countPending">0</h3><p>Pending Review</p></div>
             </div>
             <div class="stat-box sb-assigned">
                 <div class="stat-icon"><i class="fa-solid fa-user-gear"></i></div>
-                <div class="stat-info"><h3 id="countAssigned">0</h3><p>Assigned (Filling)</p></div>
+                <div class="stat-info"><h3 id="countAssigned">0</h3><p>Assigned for Filling</p></div>
             </div>
             <div class="stat-box sb-completed">
                 <div class="stat-icon"><i class="fa-solid fa-check-circle"></i></div>
-                <div class="stat-info"><h3 id="countCompleted">0</h3><p>Completed</p></div>
+                <div class="stat-info"><h3 id="countCompleted">0</h3><p>Completed Records</p></div>
             </div>
             <div class="stat-box sb-rejected">
                 <div class="stat-icon"><i class="fa-solid fa-circle-xmark"></i></div>
-                <div class="stat-info"><h3 id="countRejected">0</h3><p>Rejected</p></div>
+                <div class="stat-info"><h3 id="countRejected">0</h3><p>Rejected Records</p></div>
             </div>
         </div>
 
+        <div class="panel-grid">
         <div class="card">
             <div class="card-header">
-                <h2 id="formTitle"><i class="fa-solid fa-file-pen"></i> New Application</h2>
-                <button type="button" onclick="resetForm()" id="cancelBtn" style="display:none; background:#e5e7eb; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">Cancel Edit</button>
+                <div>
+                    <h2 id="formTitle"><i class="fa-solid fa-file-pen"></i> New Application</h2>
+                    <p>Student details, academic information aur supporting documents yahan se submit karein.</p>
+                </div>
+                <button type="button" onclick="resetForm()" id="cancelBtn" class="cancel-btn" style="display:none;"><i class="fa-solid fa-rotate-left"></i> Cancel Edit</button>
             </div>
 
             <form id="studentForm">
                 <input type="hidden" name="editId" id="editId">
 
-                <div class="form-section-title">Personal Information</div>
+                <div class="form-section">
+                <div class="form-section-title"><i class="fa-solid fa-user"></i> Personal Information</div>
                 <div class="form-grid">
                     <div class="input-group"><label>Student Name *</label><input type="text" name="studentName" id="studentNameInput" class="input-box" required></div>
                     <div class="input-group"><label>Father's Name *</label><input type="text" name="fatherName" id="fatherNameInput" class="input-box" required></div>
@@ -138,8 +619,10 @@
                     <div class="input-group"><label>Family Income *</label><input type="text" name="familyIncome" class="input-box" required></div>
                 </div>
                 <div id="duplicateAlert" class="duplicate-alert"></div>
+                </div>
 
-                <div class="form-section-title">Contact & Academic</div>
+                <div class="form-section">
+                <div class="form-section-title"><i class="fa-solid fa-graduation-cap"></i> Contact and Academic Details</div>
                 <div class="form-grid">
                     <div class="input-group"><label>Mobile *</label><input type="number" name="mobile" class="input-box" required></div>
                     <div class="input-group"><label>Alt. Mobile</label><input type="number" name="altMobile" class="input-box"></div>
@@ -161,20 +644,53 @@
                         </select>
                     </div>
                 </div>
-
-                <div class="form-section-title">Documents</div>
-                <div class="form-grid">
-                    <div class="file-box"><label>📄 10th Marksheet</label><input type="file" name="marksheet10th"></div>
-                    <div class="file-box"><label>💰 Income Certificate</label><input type="file" name="incomeProof"></div>
                 </div>
 
-                <button type="submit" class="btn-submit" id="submitBtn">🚀 Submit Application</button>
+                <div class="form-section">
+                <div class="form-section-title"><i class="fa-solid fa-folder-open"></i> Documents</div>
+                <div class="docs-grid">
+                    <div class="file-box"><label><i class="fa-solid fa-file-arrow-up"></i> 10th Marksheet</label><input type="file" name="marksheet10th"></div>
+                    <div class="file-box"><label><i class="fa-solid fa-file-invoice-dollar"></i> Income Certificate</label><input type="file" name="incomeProof"></div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submitBtn">Submit Application</button>
+                </div>
             </form>
         </div>
 
-        <div class="card">
+        <aside class="side-card">
+            <h3>Entry Checklist</h3>
+            <p>Fast aur correct entry ke liye basic checkpoints follow karein. Isse duplicate aur rejected entries dono kam hoti hain.</p>
+            <div class="side-stats">
+                <div class="side-stat">
+                    <span>Check 01</span>
+                    <strong>Name Match</strong>
+                    <small>Student name aur father name source proof se same hone chahiye.</small>
+                </div>
+                <div class="side-stat">
+                    <span>Check 02</span>
+                    <strong>Docs Ready</strong>
+                    <small>Marksheet, income proof aur ID details clear aur complete rakhein.</small>
+                </div>
+            </div>
+            <div class="mini-list">
+                <div class="mini-item"><strong>Identity check</strong><span>Student name, father name aur SSO ID ko source document se match karein.</span></div>
+                <div class="mini-item"><strong>Academic check</strong><span>Course, percentage, school aur passing year galat na ho.</span></div>
+                <div class="mini-item"><strong>Before resubmit</strong><span>Rejected record ko edit mode me hi update karein, naya form na banayein.</span></div>
+            </div>
+            <div class="side-footer">
+                <strong>Submit se pehle</strong>
+                <p>Required fields, duplicate alert aur document values ko ek baar final cross-check karke hi save karein.</p>
+            </div>
+        </aside>
+        </div>
+
+        <div class="card table-card">
             <div class="card-header">
-                <h2><i class="fa-solid fa-clock-rotate-left"></i> Submission Status</h2>
+                <div>
+                    <h2><i class="fa-solid fa-clock-rotate-left"></i> Submission Status</h2>
+                    <p>Aapke submit kiye gaye records aur unka current review status.</p>
+                </div>
             </div>
             <div class="table-responsive">
                 <table>
@@ -268,7 +784,7 @@
             await checkDuplicateLive();
             if (duplicateRecord) {
                 alert(`⚠️ ${buildDuplicateMessage({ duplicate: duplicateRecord })}`);
-                btn.textContent = editId ? "🔄 Update & Resubmit" : "🚀 Submit Application";
+                btn.textContent = editId ? "Update and Resubmit" : "Submit Application";
                 btn.disabled = false;
                 return;
             }
@@ -287,7 +803,7 @@
                 });
                 const payload = await res.json().catch(() => ({}));
 
-                if(res.ok) { alert(editId ? "✅ Updated!" : "✅ Submitted!"); resetForm(); loadHistory(); } 
+                if(res.ok) { alert(editId ? "Updated successfully." : "Submitted successfully."); resetForm(); loadHistory(); } 
                 else if (res.status === 409) { setDuplicateState(payload); alert(`⚠️ ${buildDuplicateMessage(payload)}`); }
                 else { alert(payload.error || "❌ Failed!"); }
             } catch (err) { alert("Server Error"); }
@@ -305,6 +821,9 @@
                 document.getElementById('countAssigned').innerText = currentStudents.filter(s => s.status === 'Assigned').length; // NEW
                 document.getElementById('countCompleted').innerText = currentStudents.filter(s => s.status === 'Completed').length; // CHANGED
                 document.getElementById('countRejected').innerText = currentStudents.filter(s => s.status === 'Rejected').length;
+                document.getElementById('heroPendingCount').innerText = currentStudents.filter(s => s.status === 'Pending').length;
+                document.getElementById('heroAssignedCount').innerText = currentStudents.filter(s => s.status === 'Assigned').length;
+                document.getElementById('heroCompletedCount').innerText = currentStudents.filter(s => s.status === 'Completed').length;
 
                 const tbody = document.getElementById('historyTable');
                 if(currentStudents.length === 0) { tbody.innerHTML = "<tr><td colspan='5' style='text-align:center; padding:20px;'>No records found.</td></tr>"; return; }
@@ -318,7 +837,7 @@
                             <span class="status-badge st-${s.status}">${s.status}</span>
                             ${s.adminRemark ? `<br><div class="remark-alert">⚠️ ${s.adminRemark}</div>` : ''}
                         </td>
-                        <td>${s.status === 'Rejected' ? `<button onclick="editForm('${s._id}')" class="btn-edit">✏️ Edit</button>` : '-'}</td>
+                        <td>${s.status === 'Rejected' ? `<button onclick="editForm('${s._id}')" class="btn-edit">Edit</button>` : '-'}</td>
                     </tr>
                 `).join('');
             } catch(e) { console.log(e); }
@@ -331,9 +850,9 @@
             const form = document.getElementById('studentForm');
             document.getElementById('editId').value = student._id;
             Object.keys(student).forEach(key => { if (form.elements[key] && form.elements[key].type !== 'file') form.elements[key].value = student[key]; });
-            document.getElementById('formTitle').innerHTML = `✏️ Editing: ${student.studentName}`;
+            document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen"></i> Editing: ${student.studentName}`;
             const btn = document.getElementById('submitBtn');
-            btn.textContent = "🔄 Update & Resubmit"; btn.classList.add('btn-update');
+            btn.textContent = "Update and Resubmit"; btn.classList.add('btn-update');
             document.getElementById('cancelBtn').style.display = 'inline-block';
             checkDuplicateLive();
         }
@@ -343,7 +862,7 @@
             document.getElementById('editId').value = "";
             document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-file-pen"></i> New Application`;
             const btn = document.getElementById('submitBtn');
-            btn.textContent = "🚀 Submit Application"; btn.classList.remove('btn-update');
+            btn.textContent = "Submit Application"; btn.classList.remove('btn-update');
             btn.disabled = false;
             document.getElementById('cancelBtn').style.display = 'none';
             setDuplicateState(null);
