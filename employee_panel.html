@@ -55,9 +55,12 @@
         .input-group label { display: block; font-size: 0.9rem; font-weight: 500; margin-bottom: 5px; color: var(--text-dark); }
         .input-box { width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 8px; outline: none; background: #f9fafb; }
         .input-box:focus { border-color: var(--primary); background: white; }
+        .input-box.duplicate { border-color: #dc2626; background: #fff7f7; }
         .file-box { border: 2px dashed #cbd5e1; padding: 15px; border-radius: 8px; text-align: center; background: #f8fafc; cursor: pointer; }
         .btn-submit { width: 100%; padding: 14px; background: linear-gradient(to right, #4361ee, #3f37c9); color: white; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1.5rem; }
         .btn-update { background: linear-gradient(to right, #f59e0b, #d97706); }
+        .duplicate-alert { display: none; margin-top: 1rem; padding: 12px 14px; border-radius: 10px; background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; font-size: 0.9rem; }
+        .duplicate-alert.show { display: block; }
 
         /* TABLE */
         .table-responsive { overflow-x: auto; border-radius: 10px; border: 1px solid #e5e7eb; }
@@ -117,8 +120,8 @@
 
                 <div class="form-section-title">Personal Information</div>
                 <div class="form-grid">
-                    <div class="input-group"><label>Student Name *</label><input type="text" name="studentName" class="input-box" required></div>
-                    <div class="input-group"><label>Father's Name *</label><input type="text" name="fatherName" class="input-box" required></div>
+                    <div class="input-group"><label>Student Name *</label><input type="text" name="studentName" id="studentNameInput" class="input-box" required></div>
+                    <div class="input-group"><label>Father's Name *</label><input type="text" name="fatherName" id="fatherNameInput" class="input-box" required></div>
                     <div class="input-group"><label>Mother's Name *</label><input type="text" name="motherName" class="input-box" required></div>
                     <div class="input-group"><label>Date of Birth *</label><input type="date" name="dob" class="input-box" required></div>
                     <div class="input-group">
@@ -134,6 +137,7 @@
                     </div>
                     <div class="input-group"><label>Family Income *</label><input type="text" name="familyIncome" class="input-box" required></div>
                 </div>
+                <div id="duplicateAlert" class="duplicate-alert"></div>
 
                 <div class="form-section-title">Contact & Academic</div>
                 <div class="form-grid">
@@ -188,9 +192,64 @@
         const API_URL = "https://motion-banswara-portal.onrender.com/api";
         const empName = localStorage.getItem('empName');
         let currentStudents = [];
+        let duplicateRecord = null;
+        let duplicateCheckTimer = null;
 
         if(localStorage.getItem('isEmpLoggedIn') !== 'true') window.location.href = "index.html";
         document.getElementById('empNameDisplay').innerText = empName;
+        const studentNameInput = document.getElementById('studentNameInput');
+        const fatherNameInput = document.getElementById('fatherNameInput');
+        const duplicateAlert = document.getElementById('duplicateAlert');
+
+        function normalizeValue(value = '') {
+            return String(value).trim().replace(/\s+/g, ' ').toLowerCase();
+        }
+
+        function buildDuplicateMessage(payload) {
+            const duplicate = payload?.duplicate || {};
+            const byUser = duplicate.enteredBy ? ` by ${duplicate.enteredBy}` : '';
+            return duplicate.studentName && duplicate.fatherName
+                ? `This form already exists for ${duplicate.studentName} / ${duplicate.fatherName}${byUser}.`
+                : "This form already exists for the same Student Name and Father's Name.";
+        }
+
+        function setDuplicateState(payload = null) {
+            duplicateRecord = payload?.duplicate || null;
+            const hasDuplicate = Boolean(duplicateRecord);
+            studentNameInput.classList.toggle('duplicate', hasDuplicate);
+            fatherNameInput.classList.toggle('duplicate', hasDuplicate);
+            duplicateAlert.classList.toggle('show', hasDuplicate);
+            duplicateAlert.textContent = hasDuplicate ? buildDuplicateMessage(payload) : '';
+            document.getElementById('submitBtn').disabled = hasDuplicate;
+        }
+
+        async function checkDuplicateLive() {
+            const studentName = studentNameInput.value.trim();
+            const fatherName = fatherNameInput.value.trim();
+            const editId = document.getElementById('editId').value;
+
+            if (!studentName || !fatherName) {
+                setDuplicateState(null);
+                document.getElementById('submitBtn').disabled = false;
+                return;
+            }
+
+            try {
+                const query = new URLSearchParams({ studentName, fatherName });
+                if (editId) query.set('excludeId', editId);
+                const res = await fetch(`${API_URL}/check-student-duplicate?${query.toString()}`);
+                const payload = await res.json().catch(() => ({}));
+                if (res.ok && payload.exists) setDuplicateState(payload);
+                else setDuplicateState(null);
+            } catch (err) {
+                setDuplicateState(null);
+            }
+        }
+
+        function queueDuplicateCheck() {
+            clearTimeout(duplicateCheckTimer);
+            duplicateCheckTimer = setTimeout(checkDuplicateLive, 300);
+        }
 
         // FORM SUBMIT
         document.getElementById('studentForm').addEventListener('submit', async (e) => {
@@ -206,6 +265,14 @@
                 if (key !== 'marksheet10th' && key !== 'incomeProof') studentData[key] = value;
             }
 
+            await checkDuplicateLive();
+            if (duplicateRecord) {
+                alert(`⚠️ ${buildDuplicateMessage({ duplicate: duplicateRecord })}`);
+                btn.textContent = editId ? "🔄 Update & Resubmit" : "🚀 Submit Application";
+                btn.disabled = false;
+                return;
+            }
+
             const mark = formData.get('marksheet10th');
             const inc = formData.get('incomeProof');
             if (mark.size > 0) studentData.marksheet10th = await fileToBase64(mark);
@@ -218,11 +285,13 @@
                 const res = await fetch(url, {
                     method: method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(studentData)
                 });
+                const payload = await res.json().catch(() => ({}));
 
                 if(res.ok) { alert(editId ? "✅ Updated!" : "✅ Submitted!"); resetForm(); loadHistory(); } 
-                else { alert("❌ Failed!"); }
+                else if (res.status === 409) { setDuplicateState(payload); alert(`⚠️ ${buildDuplicateMessage(payload)}`); }
+                else { alert(payload.error || "❌ Failed!"); }
             } catch (err) { alert("Server Error"); }
-            finally { btn.disabled = false; }
+            finally { if (!duplicateRecord) btn.disabled = false; }
         });
 
         // LOAD HISTORY & STATS
@@ -266,6 +335,7 @@
             const btn = document.getElementById('submitBtn');
             btn.textContent = "🔄 Update & Resubmit"; btn.classList.add('btn-update');
             document.getElementById('cancelBtn').style.display = 'inline-block';
+            checkDuplicateLive();
         }
 
         window.resetForm = function() {
@@ -274,12 +344,18 @@
             document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-file-pen"></i> New Application`;
             const btn = document.getElementById('submitBtn');
             btn.textContent = "🚀 Submit Application"; btn.classList.remove('btn-update');
+            btn.disabled = false;
             document.getElementById('cancelBtn').style.display = 'none';
+            setDuplicateState(null);
         }
 
         function fileToBase64(file) { return new Promise((r) => { const reader = new FileReader(); reader.onloadend = () => r(reader.result); reader.readAsDataURL(file); }); }
         function logout() { localStorage.removeItem('isEmpLoggedIn'); window.location.href = "index.html"; }
 
+        studentNameInput.addEventListener('input', queueDuplicateCheck);
+        fatherNameInput.addEventListener('input', queueDuplicateCheck);
+        studentNameInput.addEventListener('blur', checkDuplicateLive);
+        fatherNameInput.addEventListener('blur', checkDuplicateLive);
         loadHistory();
     </script>
 </body>

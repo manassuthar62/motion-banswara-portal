@@ -31,6 +31,18 @@ const EmployeeSchema = new mongoose.Schema({
 });
 const Employee = mongoose.model('Employee', EmployeeSchema);
 
+function normalizeValue(value = '') {
+    return String(value).trim().replace(/\s+/g, ' ').toLowerCase();
+}
+
+async function findDuplicateStudent({ studentName, fatherName }, excludeId = null) {
+    const candidates = await Student.find(excludeId ? { _id: { $ne: excludeId } } : {}).select('studentName fatherName ssoId enteredBy');
+    return candidates.find((student) =>
+        normalizeValue(student.studentName) === normalizeValue(studentName) &&
+        normalizeValue(student.fatherName) === normalizeValue(fatherName)
+    );
+}
+
 // --- ROUTES ---
 
 // 1. Unified Login (Role Batayega)
@@ -46,13 +58,69 @@ app.get('/api/employees', async (req, res) => { res.json(await Employee.find());
 app.delete('/api/employees/:id', async (req, res) => { await Employee.findByIdAndDelete(req.params.id); res.json({ msg: "Deleted" }); });
 
 // 3. Student Operations
+app.get('/api/check-student-duplicate', async (req, res) => {
+    try {
+        const { studentName = '', fatherName = '', excludeId = '' } = req.query;
+        if (!studentName.trim() || !fatherName.trim()) {
+            return res.json({ exists: false });
+        }
+
+        const duplicate = await findDuplicateStudent({ studentName, fatherName }, excludeId || null);
+        if (!duplicate) return res.json({ exists: false });
+
+        res.json({
+            exists: true,
+            duplicate: {
+                id: duplicate._id,
+                studentName: duplicate.studentName,
+                fatherName: duplicate.fatherName,
+                ssoId: duplicate.ssoId,
+                enteredBy: duplicate.enteredBy
+            }
+        });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 app.post('/api/add-student', async (req, res) => {
-    try { await new Student(req.body).save(); res.status(201).json({ message: 'Saved' }); } 
+    try {
+        const duplicate = await findDuplicateStudent(req.body);
+        if (duplicate) {
+            return res.status(409).json({
+                error: 'Duplicate student record already exists.',
+                duplicate: {
+                    studentName: duplicate.studentName,
+                    fatherName: duplicate.fatherName,
+                    ssoId: duplicate.ssoId,
+                    enteredBy: duplicate.enteredBy
+                }
+            });
+        }
+        await new Student(req.body).save();
+        res.status(201).json({ message: 'Saved' });
+    } 
     catch (e) { res.status(500).json({ error: e.message }); }
 });
 app.put('/api/edit-student/:id', async (req, res) => {
-    await Student.findByIdAndUpdate(req.params.id, { ...req.body, status: 'Pending', assignedTo: '' }); // Re-submit par assignment hata do
-    res.json({ message: 'Updated' });
+    try {
+        const duplicate = await findDuplicateStudent(req.body, req.params.id);
+        if (duplicate) {
+            return res.status(409).json({
+                error: 'Duplicate student record already exists.',
+                duplicate: {
+                    studentName: duplicate.studentName,
+                    fatherName: duplicate.fatherName,
+                    ssoId: duplicate.ssoId,
+                    enteredBy: duplicate.enteredBy
+                }
+            });
+        }
+        await Student.findByIdAndUpdate(req.params.id, { ...req.body, status: 'Pending', assignedTo: '' }); // Re-submit par assignment hata do
+        res.json({ message: 'Updated' });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
 });
 app.get('/api/students', async (req, res) => { res.json(await Student.find()); });
 app.get('/api/my-students/:empName', async (req, res) => { res.json(await Student.find({ enteredBy: req.params.empName })); });

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Admin Dashboard - Motion Banswara</title>
+    <title>Admin Dashboard - Motion Banswara</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -53,9 +53,20 @@
         .toggle{display:grid;place-items:center;width:48px;height:48px;border:none;border-radius:16px;background:#ffffffe6;box-shadow:0 10px 24px rgba(17,12,46,.08);cursor:pointer;flex-shrink:0}.toggle.active{background:#1a2229;color:#fff}.eyebrow{font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;color:var(--brand);font-weight:700;margin-bottom:8px}
         h1{font-size:clamp(1.9rem,2.3vw,2.7rem);line-height:1}.sub{color:var(--muted)}
         .live-pill{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:999px;background:#ffffffe6;border:1px solid var(--line);box-shadow:0 12px 28px rgba(17,12,46,.06)}
-        .hero-grid{display:grid;grid-template-columns:1.45fr .9fr;gap:16px;margin-bottom:20px}.hero-main,.hero-side,.stat,.cat-card,.workspace,.modal,.detail-box,.staff-form,.staff-item{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow)}
-        .hero-main,.hero-side,.workspace,.modal{border-radius:28px}.hero-main{padding:28px;color:#fff;background:radial-gradient(circle at 88% 18%,rgba(255,255,255,.24),transparent 16%),linear-gradient(140deg,#201d1b 0%,#2c2623 45%,#ca5b23 100%)}
-        .hero-main h2{font-size:clamp(2rem,2.8vw,3rem);line-height:1.02;max-width:620px;margin:10px 0 12px}.hero-main p{max-width:620px;line-height:1.65;color:rgba(255,255,255,.78)}
+        .hero-grid{display:grid;grid-template-columns:1.45fr .9fr;gap:16px;margin-bottom:20px;align-items:start}.hero-main,.hero-side,.stat,.cat-card,.workspace,.modal,.detail-box,.staff-form,.staff-item{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow)}
+        .hero-main,.hero-side,.workspace,.modal{border-radius:28px}.hero-main{padding:24px;color:#fff;background:radial-gradient(circle at 88% 18%,rgba(255,255,255,.18),transparent 16%),linear-gradient(140deg,#201d1b 0%,#2b2522 45%,#a84f22 100%);display:grid;gap:18px;align-content:start}
+        .hero-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap}
+        .hero-copy{max-width:560px}
+        .hero-main h2{font-size:clamp(1.8rem,2.4vw,2.55rem);line-height:1.06;margin:8px 0 10px}.hero-main p{line-height:1.6;color:rgba(255,255,255,.78)}
+        .hero-utility{min-width:210px;padding:16px 18px;border-radius:22px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}
+        .hero-utility span{display:block;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.58);margin-bottom:8px}
+        .hero-utility strong{display:block;font-size:1rem;margin-bottom:6px}
+        .hero-utility p{font-size:.88rem;color:rgba(255,255,255,.7)}
+        .hero-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+        .hero-meta-item{padding:14px 16px;border-radius:20px;background:rgba(12,15,18,.24);border:1px solid rgba(255,255,255,.08)}
+        .hero-meta-item span{display:block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.56);margin-bottom:8px}
+        .hero-meta-item strong{display:block;font-size:1rem;margin-bottom:4px}
+        .hero-meta-item p{font-size:.86rem;color:rgba(255,255,255,.7)}
         .tag{padding:10px 14px;border-radius:999px;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.12);font-size:.88rem}
         .cta,.cta-lite,.btn-excel,.assign-wrap button,.btn,.staff-add,.close-btn{border:none;cursor:pointer}.cta,.cta-lite,.btn-excel,.btn,.staff-add,.close-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border-radius:16px;font-weight:700;transition:.2s ease}
         .cta,.btn-excel,.staff-add{padding:14px 18px}.cta{background:#fff4ec;color:#983e12}.cta-lite{padding:14px 18px;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.14)}
@@ -100,6 +111,8 @@
             .hero-actions{flex-wrap:wrap}
             .cta,.cta-lite{flex:1}
             .search{min-width:0}
+            .hero-meta{grid-template-columns:1fr}
+            .hero-utility{min-width:0;width:100%}
         }
         @media (max-width:760px){
             .main{padding:14px 12px 24px}
@@ -114,6 +127,7 @@
             .live-pill{justify-content:flex-start;border-radius:20px}
             .live-pill strong{font-size:1rem}
             .hero-main,.hero-side,.workspace,.cat-wrap{padding:18px}
+            .hero-head{flex-direction:column}
             .hero-main h2{font-size:clamp(1.8rem,8vw,2.35rem)}
             .hero-main p,.pulse-card p,.table-title p,.cat-head p{font-size:.9rem}
             .tag,.cta,.cta-lite,.btn-excel,.btn,.staff-add{width:100%}
@@ -169,7 +183,7 @@
                 <div class="logo-badge"><i class="fa-solid fa-shield-halved"></i></div>
                 <div><small>Motion Banswara</small><strong>Admin Command</strong></div>
             </div>
-            <div class="brand-chip">Secure admin workspace</div>
+            <div class="brand-chip">Admin tools</div>
         </div>
         <div class="sidebar-section">
             <div class="nav-label">Workspace</div>
@@ -208,8 +222,8 @@
         <div class="sidebar-quick">
             <div class="quick-head">
                 <div>
-                    <div class="quick-label">Desk status</div>
-                    <strong>Live queue snapshot</strong>
+                    <div class="quick-label">Status</div>
+                    <strong>Queue summary</strong>
                 </div>
                 <span id="sidebarSync">Waiting for sync</span>
             </div>
@@ -219,9 +233,9 @@
             </div>
         </div>
         <div class="note">
-            <div class="note-label">Control note</div>
-            <strong>Sidebar ab focused rahega</strong>
-            <p>Mobile par ye tabhi open hoga jab toggle dabega, aur outside click ya Esc par turant close ho jayega.</p>
+            <div class="note-label">Menu</div>
+            <strong>Quick access</strong>
+            <p>Menu ko button se open karein. Outside click ya Esc se close ho jayega.</p>
         </div>
     </aside>
     <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()" aria-hidden="true"></div>
@@ -230,36 +244,50 @@
         <div class="topbar">
             <div class="top-left">
                 <button class="toggle" id="sidebarToggle" onclick="toggleSidebar()" aria-label="Toggle sidebar" aria-expanded="false" aria-controls="sidebar"><i class="fa-solid fa-bars"></i></button>
-                <div><div class="eyebrow">Admin Overview</div><h1>Premium control dashboard</h1><p class="sub">Backend untouched hai, lekin admin panel ab kaafi polished aur client-facing lagta hai.</p></div>
+                <div><div class="eyebrow">Admin Panel</div><h1>Admin Dashboard</h1><p class="sub">Applications, staff assignment aur review actions ek jagah par.</p></div>
             </div>
             <div class="live-pill"><i class="fa-regular fa-clock"></i><div><strong id="syncDate">Live sync pending</strong><div class="sub">Latest refresh</div></div></div>
         </div>
 
         <section class="hero-grid">
             <div class="hero-main">
-                <div class="hero-tags"><div class="tag"><i class="fa-solid fa-wave-square"></i> Real-time application desk</div><div class="tag"><i class="fa-solid fa-user-shield"></i> Super admin access</div></div>
-                <h2>Aisa dashboard jo dekhte hi premium lage.</h2>
-                <p>Review queue, assignments, document access aur approval actions ko ek stronger visual hierarchy me organize kiya gaya hai, bina kisi backend endpoint ko touch kiye.</p>
+                <div class="hero-head">
+                    <div class="hero-copy">
+                        <div class="hero-tags"><div class="tag"><i class="fa-solid fa-list-check"></i> Application review</div><div class="tag"><i class="fa-solid fa-user-shield"></i> Admin access</div></div>
+                        <h2>Application management dashboard</h2>
+                        <p>Review queue, assignments, document checks aur status updates yahin se manage karein.</p>
+                    </div>
+                    <div class="hero-utility">
+                        <span>Quick focus</span>
+                        <strong>Pending applications first</strong>
+                        <p>Search karke review karein, staff ko assign karein aur status update karein.</p>
+                    </div>
+                </div>
                 <div class="hero-actions"><button onclick="openStaffModal()" class="cta"><i class="fa-solid fa-users-gear"></i> Manage Team</button><button onclick="exportToExcel()" class="cta-lite"><i class="fa-solid fa-file-export"></i> Export CSV</button></div>
+                <div class="hero-meta">
+                    <div class="hero-meta-item"><span>Step 1</span><strong>Search & Review</strong><p>Name, mobile ya SSO ID se application dhoondhein.</p></div>
+                    <div class="hero-meta-item"><span>Step 2</span><strong>Assign Staff</strong><p>Pending records ko team member ke naam par assign karein.</p></div>
+                    <div class="hero-meta-item"><span>Step 3</span><strong>Update Status</strong><p>Approve, reject ya close action details ke saath save karein.</p></div>
+                </div>
             </div>
             <div class="hero-side">
-                <div class="panel-head"><div><h3>Today's pulse</h3><p>Fast glance metrics for the review desk.</p></div><div class="trend"><i class="fa-solid fa-circle"></i> Live</div></div>
+                <div class="panel-head"><div><h3>Summary</h3><p>Current application status overview.</p></div><div class="trend"><i class="fa-solid fa-circle"></i> Live</div></div>
                 <div class="pulse">
-                    <div class="pulse-card"><div><small>Total records</small><strong id="heroTotal">0</strong><p>All applications in the current pipeline</p></div><div class="pulse-icon"><i class="fa-solid fa-layer-group"></i></div></div>
+                    <div class="pulse-card"><div><small>Total records</small><strong id="heroTotal">0</strong><p>Total applications available</p></div><div class="pulse-icon"><i class="fa-solid fa-layer-group"></i></div></div>
                     <div class="pulse-card"><div><small>Pending queue</small><strong id="heroPending">0</strong><p>Applications waiting for review</p></div><div class="pulse-icon"><i class="fa-regular fa-hourglass-half"></i></div></div>
-                    <div class="pulse-card"><div><small>Completion rate</small><strong id="heroRate">0%</strong><p>Based on completed applications</p></div><div class="pulse-icon"><i class="fa-solid fa-chart-line"></i></div></div>
+                    <div class="pulse-card"><div><small>Completion rate</small><strong id="heroRate">0%</strong><p>Completed applications ratio</p></div><div class="pulse-icon"><i class="fa-solid fa-chart-line"></i></div></div>
                 </div>
             </div>
         </section>
         <section class="stats">
-            <div class="stat st-total"><div class="stat-top"><div class="icon"><i class="fa-solid fa-users"></i></div><div class="micro">Master volume</div></div><h3 id="cTotal">0</h3><p>Total Applications</p><small>System me registered sabhi entries ka combined count.</small></div>
-            <div class="stat st-pending"><div class="stat-top"><div class="icon"><i class="fa-regular fa-clock"></i></div><div class="micro">Needs action</div></div><h3 id="cPen">0</h3><p>Pending Review</p><small>Jo applications abhi admin action ka wait kar rahi hain.</small></div>
-            <div class="stat st-completed"><div class="stat-top"><div class="icon"><i class="fa-solid fa-check-double"></i></div><div class="micro">Closed well</div></div><h3 id="cComp">0</h3><p>Completed</p><small>Approved ya properly closed records yahan reflect hote hain.</small></div>
-            <div class="stat st-rejected"><div class="stat-top"><div class="icon"><i class="fa-solid fa-ban"></i></div><div class="micro">Returned</div></div><h3 id="cRej">0</h3><p>Rejected</p><small>Remarks ke saath return ki gayi applications ka count.</small></div>
+            <div class="stat st-total"><div class="stat-top"><div class="icon"><i class="fa-solid fa-users"></i></div><div class="micro">Total</div></div><h3 id="cTotal">0</h3><p>Total Applications</p><small>All registered applications.</small></div>
+            <div class="stat st-pending"><div class="stat-top"><div class="icon"><i class="fa-regular fa-clock"></i></div><div class="micro">Pending</div></div><h3 id="cPen">0</h3><p>Pending Review</p><small>Applications waiting for admin action.</small></div>
+            <div class="stat st-completed"><div class="stat-top"><div class="icon"><i class="fa-solid fa-check-double"></i></div><div class="micro">Completed</div></div><h3 id="cComp">0</h3><p>Completed</p><small>Closed or approved records.</small></div>
+            <div class="stat st-rejected"><div class="stat-top"><div class="icon"><i class="fa-solid fa-ban"></i></div><div class="micro">Rejected</div></div><h3 id="cRej">0</h3><p>Rejected</p><small>Applications returned with remark.</small></div>
         </section>
 
         <section class="cat-wrap">
-            <div class="cat-head"><div><h3>Category distribution</h3><p>Quick composition snapshot for reservation segments.</p></div></div>
+            <div class="cat-head"><div><h3>Category Summary</h3><p>Application count by category.</p></div></div>
             <div class="cats">
                 <div class="cat-card"><span>General</span><b id="catGen">0</b></div>
                 <div class="cat-card"><span>OBC</span><b id="catOBC">0</b></div>
@@ -271,7 +299,7 @@
 
         <section class="workspace">
             <div class="table-head">
-                <div class="table-title"><h3><i class="fa-solid fa-list-check"></i> Application workflow</h3><p>Search, assign, review aur document action sab isi workspace me.</p></div>
+                <div class="table-title"><h3><i class="fa-solid fa-list-check"></i> Applications</h3><p>Search, assign, review aur update status.</p></div>
                 <div class="toolbar"><div class="search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="search" placeholder="Search by name, SSO ID or mobile number"></div><button onclick="exportToExcel()" class="btn-excel"><i class="fa-solid fa-file-export"></i> Export CSV</button></div>
             </div>
             <div class="table-shell">
