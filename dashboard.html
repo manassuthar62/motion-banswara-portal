@@ -4,686 +4,294 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Super Admin Dashboard - Motion Banswara</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
-        :root { 
-            --primary: #4361ee; 
-            --primary-dark: #3a56d4;
-            --secondary: #3f37c9; 
-            --success: #00b894; 
-            --warning: #f1c40f; 
-            --danger: #ff4757; 
-            --dark: #1e272e; 
-            --light: #f1f2f6; 
-            --sidebar-bg: #0c2461;
-            --card-bg: #ffffff;
-            --text-grey: #747d8c;
-        }
-
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Outfit', sans-serif; }
-        
-        body { 
-            background: #f0f2f5; 
-            min-height: 100vh; 
-            display: flex; 
-            overflow-x: hidden;
-        }
-
-        /* --- SIDEBAR --- */
-        .sidebar { 
-            width: 260px; 
-            background: var(--sidebar-bg); 
-            color: white; 
-            height: 100vh; 
-            padding: 1.5rem; 
-            position: fixed; 
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-        
-        .logo { 
-            font-size: 1.5rem; 
-            font-weight: 700; 
-            margin-bottom: 2.5rem; 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            color: #fff;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 20px;
-        }
-        
-        .menu a { 
-            display: flex; 
-            align-items: center; 
-            gap: 15px;
-            color: rgba(255,255,255,0.7); 
-            padding: 14px 15px; 
-            margin-bottom: 8px; 
-            border-radius: 10px; 
-            text-decoration: none; 
-            transition: 0.3s; 
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
-        
-        .menu a:hover, .menu a.active { 
-            background: var(--primary); 
-            color: white; 
-            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.4);
-            transform: translateX(5px);
-        }
-        
-        .logout { 
-            margin-top: auto; 
-            background: rgba(255, 71, 87, 0.1) !important; 
-            color: #ff4757 !important; 
-        }
-        .logout:hover { background: #ff4757 !important; color: white !important; }
-
-        /* --- MAIN CONTENT --- */
-        .main { 
-            margin-left: 260px; 
-            width: calc(100% - 260px); 
-            padding: 2rem; 
-            transition: all 0.3s ease;
-        }
-
-        /* Header & Mobile Toggle */
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-        .hamburger {
-            display: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--dark);
-        }
-
-        /* STATS CARDS */
-        .stats { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
-            gap: 1.5rem; 
-            margin-bottom: 2rem; 
-        }
-        .card { 
-            background: var(--card-bg); 
-            padding: 1.5rem; 
-            border-radius: 16px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05); 
-            display: flex; 
-            align-items: center; 
-            gap: 20px; 
-            transition: transform 0.3s ease;
-            border: 1px solid rgba(0,0,0,0.02);
-        }
-        .card:hover { transform: translateY(-5px); }
-        
-        .icon-box { 
-            width: 60px; 
-            height: 60px; 
-            border-radius: 12px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 1.8rem; 
-        }
-        
-        .st-total .icon-box { background: rgba(67, 97, 238, 0.1); color: var(--primary); }
-        .st-pending .icon-box { background: rgba(241, 196, 15, 0.1); color: var(--warning); }
-        .st-completed .icon-box { background: rgba(0, 184, 148, 0.1); color: var(--success); }
-        .st-rejected .icon-box { background: rgba(255, 71, 87, 0.1); color: var(--danger); }
-        
-        .st-info h3 { font-size: 2rem; margin: 0; color: var(--dark); font-weight: 700; }
-        .st-info p { color: var(--text-grey); font-size: 0.9rem; }
-
-        /* CATEGORY CHIPS */
-        .cat-row { 
-            display: flex; 
-            gap: 1rem; 
-            overflow-x: auto; 
-            padding-bottom: 10px; 
-            margin-bottom: 2rem; 
-            scrollbar-width: none; /* Hide scrollbar Firefox */
-        }
-        .cat-row::-webkit-scrollbar { display: none; } /* Hide scrollbar Chrome */
-        
-        .cat-chip { 
-            background: white; 
-            padding: 10px 20px; 
-            border-radius: 50px; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
-            white-space: nowrap; 
-            border: 1px solid #eee; 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            font-size: 0.9rem; 
-            color: var(--text-grey); 
-            transition: 0.2s;
-        }
-        .cat-chip:hover { border-color: var(--primary); color: var(--primary); }
-        .cat-chip b { color: var(--dark); font-size: 1.1rem; }
-
-        /* TABLE SECTION */
-        .table-card { 
-            background: white; 
-            border-radius: 16px; 
-            padding: 1.5rem; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05); 
-        }
-        
-        .table-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 1.5rem; 
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        
-        .search-wrapper { display: flex; gap: 10px; width: 100%; max-width: 500px; }
-        .search-inp { 
-            padding: 12px; 
-            border: 1px solid #e1e1e1; 
-            border-radius: 8px; 
-            width: 100%; 
-            outline: none; 
-            transition: 0.3s;
-        }
-        .search-inp:focus { border-color: var(--primary); }
-
-        /* Responsive Table */
-        .table-responsive { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 900px; }
-        
-        thead th { 
-            text-align: left; 
-            padding: 15px; 
-            background: #f8f9fa; 
-            color: #636e72; 
-            font-size: 0.85rem; 
-            text-transform: uppercase; 
-            letter-spacing: 0.5px;
-            font-weight: 600;
-        }
-        
-        tbody td { 
-            padding: 15px; 
-            border-bottom: 1px solid #f1f2f6; 
-            color: var(--dark); 
-            font-size: 0.95rem; 
-            vertical-align: middle; 
-        }
-        tbody tr:hover { background: #fcfcfc; }
-        
-        /* Status Badges */
-        .badge { padding: 6px 12px; border-radius: 30px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
-        .b-Pending { background: #fff3cd; color: #f39c12; }
-        .b-Assigned { background: #dbeafe; color: #2563eb; }
-        .b-Completed { background: #d1fae5; color: #047857; }
-        .b-Rejected { background: #fee2e2; color: #b91c1c; }
-
-        .btn-action { 
-            background: white; 
-            color: var(--primary); 
-            border: 1px solid var(--primary); 
-            padding: 6px 15px; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            font-size: 0.85rem; 
-            transition: 0.2s;
-        }
-        .btn-action:hover { background: var(--primary); color: white; }
-
-        .btn-excel { 
-            background: #10ac84; 
-            color: white; 
-            border: none; 
-            padding: 10px 20px; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-            font-weight: 500;
-        }
-
-        /* --- MODAL STYLES (Improved) --- */
-        .modal-overlay { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.6); z-index: 2000; 
-            display: none; align-items: center; justify-content: center; 
-            backdrop-filter: blur(5px); 
-        }
-        .modal { 
-            background: white; width: 95%; max-width: 850px; 
-            border-radius: 16px; overflow: hidden; 
-            animation: zoomIn 0.3s ease; 
-            display: flex; flex-direction: column; max-height: 90vh;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
-        }
-        @keyframes zoomIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        
-        .modal-header { 
-            background: var(--sidebar-bg); 
-            padding: 1.2rem 2rem; 
-            color: white; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-        }
-        .modal-body { padding: 2rem; overflow-y: auto; background: #f8f9fa; }
-        
-        /* Modal Grid Layout */
-        .full-info-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-            gap: 20px; 
-        }
-        
-        .section-box { 
-            background: white; 
-            padding: 20px; 
-            border-radius: 12px; 
-            border: 1px solid #eee; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-        }
-        .section-box h4 { 
-            color: var(--primary); 
-            border-bottom: 2px solid #f0f0f0; 
-            padding-bottom: 10px; 
-            margin-bottom: 15px; 
-            font-size: 1rem; 
-            text-transform: uppercase; 
-            letter-spacing: 1px;
-        }
-        
-        .data-row { 
-            display: flex; 
-            justify-content: space-between; 
-            margin-bottom: 12px; 
-            font-size: 0.9rem; 
-        }
-        .data-row span { color: #888; }
-        .data-row b { color: #333; font-weight: 600; text-align: right; }
-
-        /* Action Buttons Area */
-        .action-box { 
-            grid-column: 1 / -1; 
-            background: #fff; 
-            border-top: 5px solid var(--primary);
-        }
-        .remark-input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 15px; }
-        
-        .btn-group { display: flex; gap: 15px; margin-bottom: 15px; }
-        .btn { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; color: white; transition: 0.3s; }
-        .btn:hover { transform: translateY(-2px); shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .btn-approve { background: var(--success); } 
-        .btn-reject { background: var(--danger); }
-        .btn-delete { background: #2d3436; width: 100%; }
-        
-        .doc-btn { 
-            padding: 8px 16px; background: #e0e7ff; color: var(--primary); 
-            text-decoration: none; border-radius: 30px; font-size: 0.85rem; 
-            font-weight: 600; display: inline-block; margin-right: 10px; margin-top: 10px;
-        }
-        .doc-btn:hover { background: var(--primary); color: white; }
-
-        /* --- MOBILE RESPONSIVE --- */
-        @media (max-width: 768px) {
-            .sidebar { transform: translateX(-100%); width: 280px; }
-            .sidebar.active { transform: translateX(0); box-shadow: 10px 0 30px rgba(0,0,0,0.1); }
-            
-            .main { margin-left: 0; width: 100%; padding: 1.5rem; }
-            .hamburger { display: block; }
-            
-            .table-header { flex-direction: column; align-items: flex-start; }
-            .search-wrapper { max-width: 100%; flex-direction: column; }
-            .btn-excel { width: 100%; justify-content: center; }
-            
-            .btn-group { flex-direction: column; }
-            
-            /* Modal on Mobile */
-            .full-info-grid { grid-template-columns: 1fr; }
-            .data-row { flex-direction: column; gap: 2px; border-bottom: 1px dashed #eee; padding-bottom: 8px; }
-            .data-row b { text-align: left; }
-        }
+        :root{--bg:#f6f0e8;--panel:#ffffffd9;--line:#1b24301a;--text:#18212b;--muted:#677487;--brand:#d56a30;--blue:#2c6cde;--green:#1d9a6c;--red:#d74b4b;--amber:#d39a20;--shadow:0 24px 60px rgba(17,12,46,.10)}
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Outfit',sans-serif}
+        body{min-height:100vh;display:flex;color:var(--text);background:radial-gradient(circle at top left,rgba(213,106,48,.16),transparent 28%),radial-gradient(circle at right top,rgba(44,108,222,.12),transparent 24%),linear-gradient(180deg,#f8f4ed 0%,#f1ece5 100%);overflow-x:hidden}
+        a{text-decoration:none;color:inherit}button,input,select{font:inherit}
+        .sidebar{position:fixed;inset:0 auto 0 0;width:286px;padding:24px;display:flex;flex-direction:column;background:linear-gradient(180deg,#1b1b1b 0%,#111 100%);color:#f7f2ec;border-right:1px solid rgba(255,255,255,.07);box-shadow:20px 0 50px rgba(0,0,0,.16);z-index:10;transition:transform .3s ease}
+        .logo{display:flex;align-items:center;gap:14px;padding:18px;border-radius:24px;background:linear-gradient(135deg,rgba(213,106,48,.22),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.07);margin-bottom:24px}
+        .logo-badge{width:52px;height:52px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,#f0894c,#c85621);font-size:1.2rem;box-shadow:0 12px 24px rgba(213,106,48,.3)}
+        .logo small,.nav-label{display:block;text-transform:uppercase;letter-spacing:.18em;font-size:.7rem;color:rgba(255,255,255,.45)}
+        .logo strong{display:block;margin-top:4px;font-size:1.2rem}.nav-label{padding:0 8px 12px}
+        .menu{display:flex;flex-direction:column;gap:10px}.menu a{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-radius:18px;color:rgba(255,255,255,.75);border:1px solid transparent;transition:.22s ease}.menu a span{display:flex;align-items:center;gap:12px}
+        .menu a:hover,.menu a.active{background:linear-gradient(135deg,rgba(213,106,48,.22),rgba(255,255,255,.05));color:#fff;border-color:rgba(255,255,255,.07);transform:translateX(4px)}
+        .logout{margin-top:10px;background:rgba(215,75,75,.13)!important;color:#ffc3c3!important;border-color:rgba(215,75,75,.15)!important}.sidebar-fill{flex:1}
+        .note{margin-top:18px;padding:18px;border-radius:22px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07)}.note strong{display:block;margin-bottom:8px}.note p{font-size:.87rem;line-height:1.6;color:rgba(255,255,255,.62)}
+        .main{width:calc(100% - 286px);margin-left:286px;padding:28px;position:relative}
+        .topbar,.table-head,.hero-actions,.hero-tags,.modal-top,.status-row,.btn-row{display:flex;gap:16px}.topbar{justify-content:space-between;align-items:center;margin-bottom:22px}.top-left{display:flex;align-items:center;gap:14px}
+        .toggle{display:none;width:48px;height:48px;border:none;border-radius:16px;background:#ffffffe6;box-shadow:0 10px 24px rgba(17,12,46,.08);cursor:pointer}.eyebrow{font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;color:var(--brand);font-weight:700;margin-bottom:8px}
+        h1{font-size:clamp(1.9rem,2.3vw,2.7rem);line-height:1}.sub{color:var(--muted)}
+        .live-pill{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:999px;background:#ffffffe6;border:1px solid var(--line);box-shadow:0 12px 28px rgba(17,12,46,.06)}
+        .hero-grid{display:grid;grid-template-columns:1.45fr .9fr;gap:16px;margin-bottom:20px}.hero-main,.hero-side,.stat,.cat-card,.workspace,.modal,.detail-box,.staff-form,.staff-item{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow)}
+        .hero-main,.hero-side,.workspace,.modal{border-radius:28px}.hero-main{padding:28px;color:#fff;background:radial-gradient(circle at 88% 18%,rgba(255,255,255,.24),transparent 16%),linear-gradient(140deg,#201d1b 0%,#2c2623 45%,#ca5b23 100%)}
+        .hero-main h2{font-size:clamp(2rem,2.8vw,3rem);line-height:1.02;max-width:620px;margin:10px 0 12px}.hero-main p{max-width:620px;line-height:1.65;color:rgba(255,255,255,.78)}
+        .tag{padding:10px 14px;border-radius:999px;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.12);font-size:.88rem}
+        .cta,.cta-lite,.btn-excel,.assign-wrap button,.btn,.staff-add,.close-btn{border:none;cursor:pointer}.cta,.cta-lite,.btn-excel,.btn,.staff-add,.close-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border-radius:16px;font-weight:700;transition:.2s ease}
+        .cta,.btn-excel,.staff-add{padding:14px 18px}.cta{background:#fff4ec;color:#983e12}.cta-lite{padding:14px 18px;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.14)}
+        .hero-side{padding:24px;background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(255,255,255,.84))}.panel-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}.panel-head p{font-size:.88rem;color:var(--muted);margin-top:4px}
+        .trend{padding:10px 14px;border-radius:999px;background:rgba(29,154,108,.12);color:var(--green);font-size:.82rem;font-weight:700}.pulse{display:grid;gap:12px}.pulse-card{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-radius:20px;background:linear-gradient(180deg,rgba(248,239,228,.68),#fff)}
+        .pulse-card small{display:block;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}.pulse-card strong{font-size:1.5rem}.pulse-card p{font-size:.85rem;color:var(--muted);margin-top:6px}.pulse-icon{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:#fff;color:var(--brand);box-shadow:0 12px 24px rgba(17,12,46,.08)}
+        .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:18px}.stat{padding:22px;border-radius:24px;background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(255,255,255,.82));position:relative;overflow:hidden}.stat::after{content:"";position:absolute;right:-34px;top:-42px;width:112px;height:112px;border-radius:999px;opacity:.9}
+        .stat-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}.icon{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;font-size:1.24rem}.micro{padding:8px 10px;border-radius:999px;font-size:.77rem;font-weight:700}
+        .stat h3{font-size:clamp(2rem,2.4vw,2.6rem);line-height:1;margin-bottom:8px}.stat p{font-weight:600;margin-bottom:8px}.stat small{color:var(--muted);line-height:1.55}
+        .st-total::after{background:rgba(44,108,222,.1)} .st-total .icon,.st-total .micro{background:rgba(44,108,222,.12);color:var(--blue)}
+        .st-pending::after{background:rgba(211,154,32,.12)} .st-pending .icon,.st-pending .micro{background:rgba(211,154,32,.14);color:var(--amber)}
+        .st-completed::after{background:rgba(29,154,108,.12)} .st-completed .icon,.st-completed .micro{background:rgba(29,154,108,.12);color:var(--green)}
+        .st-rejected::after{background:rgba(215,75,75,.12)} .st-rejected .icon,.st-rejected .micro{background:rgba(215,75,75,.12);color:var(--red)}
+        .cat-wrap{margin-bottom:18px;padding:18px;border-radius:24px;background:var(--panel);border:1px solid var(--line);box-shadow:0 16px 40px rgba(17,12,46,.06)}.cat-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.cat-head p{font-size:.88rem;color:var(--muted);margin-top:4px}
+        .cats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.cat-card{padding:16px 18px;border-radius:20px;background:linear-gradient(180deg,rgba(248,239,228,.62),rgba(255,255,255,.95));display:flex;justify-content:space-between;align-items:center}.cat-card span{font-size:.8rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)} .cat-card b{font-size:1.55rem}
+        .workspace{padding:22px;background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(255,255,255,.84))}.table-head{justify-content:space-between;align-items:center;margin-bottom:18px}.table-title h3{display:flex;align-items:center;gap:10px;font-size:1.14rem}.table-title p{margin-top:5px;font-size:.9rem;color:var(--muted)}
+        .toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.search{position:relative;min-width:320px;flex:1}.search i{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--muted)}
+        .search input,.remark-input,.staff-form input,.staff-form select,.assign-wrap select{width:100%;padding:14px 16px;border-radius:16px;border:1px solid var(--line);background:#ffffffe8;outline:none}.search input{padding-left:44px}.btn-excel{background:linear-gradient(135deg,#178d62,#28ad7a);color:#fff;box-shadow:0 14px 30px rgba(29,154,108,.24)}
+        .table-shell{overflow:auto;border-radius:22px;border:1px solid var(--line);background:#ffffffe0}table{width:100%;min-width:980px;border-collapse:separate;border-spacing:0}thead th{padding:16px 18px;text-align:left;background:rgba(248,239,228,.76);font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;color:#5f6671;white-space:nowrap}tbody td{padding:18px;border-bottom:1px solid var(--line);vertical-align:middle}tbody tr:hover{background:rgba(248,239,228,.26)}
+        .student{display:grid;gap:6px}.student strong{font-size:1rem}.student-meta{display:flex;gap:10px;flex-wrap:wrap;font-size:.84rem;color:var(--muted)}.student-meta span,.course,.badge,.assigned{display:inline-flex;align-items:center;gap:8px}
+        .course{padding:10px 12px;border-radius:14px;background:rgba(248,239,228,.76);color:#8e481f;font-weight:700}.badge{padding:8px 12px;border-radius:999px;font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em}.b-Pending{background:rgba(211,154,32,.14);color:#9a7013}.b-Assigned{background:rgba(44,108,222,.12);color:var(--blue)}.b-Completed{background:rgba(29,154,108,.12);color:var(--green)}.b-Rejected{background:rgba(215,75,75,.12);color:var(--red)}
+        .assign-wrap{display:flex;align-items:center;gap:8px;min-width:220px}.assign-wrap button{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#22a772,#178d62);color:#fff}.assigned{padding:10px 12px;border-radius:14px;background:rgba(27,36,48,.05);font-weight:600}.view-btn{padding:10px 14px;border-radius:14px;border:1px solid rgba(213,106,48,.18);background:rgba(213,106,48,.08);color:#9d4212;font-weight:700;cursor:pointer}
+        .empty{text-align:center;padding:40px 24px;color:var(--muted)} .empty i{display:inline-grid;place-items:center;width:60px;height:60px;border-radius:18px;margin-bottom:12px;background:rgba(213,106,48,.1);color:var(--brand)}
+        .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:28px;background:rgba(16,16,16,.56);backdrop-filter:blur(8px);z-index:20}.modal{width:min(1080px,100%);max-height:calc(100vh - 56px);display:flex;flex-direction:column;overflow:hidden}.modal-top{justify-content:space-between;align-items:center;padding:22px 24px;color:#fff;background:linear-gradient(135deg,#1f1d1b,#c95a23)}
+        .modal-top h3{display:flex;align-items:center;gap:12px;font-size:1.08rem}.close-btn{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.15)}.modal-body{padding:24px;overflow:auto}
+        .detail-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}.detail-box{grid-column:span 4;padding:20px;border-radius:24px}.detail-box h4{display:flex;align-items:center;gap:10px;margin-bottom:16px;font-size:.98rem}.detail-box h4 i{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:rgba(213,106,48,.1);color:var(--brand)}
+        .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 0;border-bottom:1px dashed var(--line)} .row:last-child{border-bottom:none;padding-bottom:0}.row span{color:var(--muted)} .row b{text-align:right;word-break:break-word}.docs{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}.doc{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:14px;background:rgba(213,106,48,.1);border:1px solid rgba(213,106,48,.14);color:#9d4212;font-weight:700}
+        .action-box{grid-column:1/-1;background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(248,244,237,.94))}.status-row{justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:16px}.remark-box{padding:14px 16px;border-radius:18px;background:rgba(215,75,75,.08);border:1px solid rgba(215,75,75,.1);color:#7f2a2a;margin-bottom:16px}.remark-box strong{display:block;margin-bottom:6px}
+        .btn-row{margin:14px 0 12px}.btn{flex:1;padding:14px 16px;color:#fff}.approve{background:linear-gradient(135deg,#178d62,#28ad7a)}.reject{background:linear-gradient(135deg,#cb4242,#e25d5d)}.delete{width:100%;padding:14px 16px;background:linear-gradient(135deg,#1f252d,#394049);color:#fff}
+        .staff-form{padding:18px;border-radius:24px;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px;margin-bottom:18px}.staff-form .wide{grid-column:span 4}.staff-form .mid{grid-column:span 3}.staff-form .small{grid-column:span 2}.staff-add{grid-column:1/-1;justify-self:start;background:linear-gradient(135deg,#178d62,#28ad7a);color:#fff}.staff-list{display:grid;gap:10px}.staff-item{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-radius:18px}
+        .staff-role{display:inline-flex;padding:7px 10px;border-radius:999px;background:rgba(44,108,222,.1);color:var(--blue);font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em}.trash{width:40px;height:40px;border:none;border-radius:14px;background:rgba(215,75,75,.1);color:var(--red);cursor:pointer}
+        @media (max-width:1220px){.hero-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.cats{grid-template-columns:repeat(3,minmax(0,1fr))}.detail-box{grid-column:span 6}}
+        @media (max-width:920px){.sidebar{transform:translateX(-100%)}.sidebar.active{transform:translateX(0)}.main{width:100%;margin-left:0;padding:18px 16px 28px}.toggle{display:grid;place-items:center}.topbar{align-items:flex-start;flex-direction:column}.live-pill{width:100%;justify-content:center}}
+        @media (max-width:760px){.hero-grid,.stats,.cats{grid-template-columns:1fr}.table-head,.btn-row{flex-direction:column;align-items:stretch}.toolbar,.search{width:100%}.search{min-width:0}.btn-excel{width:100%}.detail-box{grid-column:1/-1}.row{grid-template-columns:1fr}.row b{text-align:left}.staff-form{grid-template-columns:1fr}.staff-form .wide,.staff-form .mid,.staff-form .small,.staff-add{grid-column:auto}}
     </style>
 </head>
 <body>
-
-    <div class="sidebar" id="sidebar">
-        <div class="logo">
-            <i class="fa-solid fa-shield-halved"></i> Motion Admin
-        </div>
+    <aside class="sidebar" id="sidebar">
+        <div class="logo"><div class="logo-badge"><i class="fa-solid fa-shield-halved"></i></div><div><small>Motion Banswara</small><strong>Admin Command</strong></div></div>
+        <div class="nav-label">Navigation</div>
         <div class="menu">
-            <a href="#" class="active"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
-            <a href="#" onclick="openStaffModal()"><i class="fa-solid fa-users-gear"></i> Manage Staff</a>
-            <a href="viewer_login.html"><i class="fa-solid fa-eye"></i> Observer Mode</a>
-            <div style="flex-grow:1"></div>
-            <a href="#" onclick="logout()" class="logout"><i class="fa-solid fa-power-off"></i> Logout</a>
+            <a href="#" class="active"><span><i class="fa-solid fa-chart-pie"></i> Dashboard</span><i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#" onclick="openStaffModal()"><span><i class="fa-solid fa-users-gear"></i> Manage Staff</span><i class="fa-solid fa-arrow-right"></i></a>
+            <a href="viewer_login.html"><span><i class="fa-solid fa-eye"></i> Observer Mode</span><i class="fa-solid fa-arrow-right"></i></a>
+            <div class="sidebar-fill"></div>
+            <a href="#" onclick="logout()" class="logout"><span><i class="fa-solid fa-power-off"></i> Logout</span><i class="fa-solid fa-arrow-right"></i></a>
         </div>
-    </div>
+        <div class="note"><strong>Control room live</strong><p>Applications, assignments aur review flow ko ek hi jagah se premium feel ke saath handle karo.</p></div>
+    </aside>
 
-    <div class="main">
-        <div class="top-bar">
-            <div style="display:flex; align-items:center; gap:15px;">
-                <i class="fa-solid fa-bars hamburger" onclick="toggleSidebar()"></i>
-                <div>
-                    <h2 style="color:var(--dark);">Overview</h2>
-                    <p style="color:var(--text-grey); font-size:0.9rem;">Welcome back, Admin</p>
+    <main class="main">
+        <div class="topbar">
+            <div class="top-left">
+                <button class="toggle" onclick="toggleSidebar()" aria-label="Toggle sidebar"><i class="fa-solid fa-bars"></i></button>
+                <div><div class="eyebrow">Admin Overview</div><h1>Premium control dashboard</h1><p class="sub">Backend untouched hai, lekin admin panel ab kaafi polished aur client-facing lagta hai.</p></div>
+            </div>
+            <div class="live-pill"><i class="fa-regular fa-clock"></i><div><strong id="syncDate">Live sync pending</strong><div class="sub">Latest refresh</div></div></div>
+        </div>
+
+        <section class="hero-grid">
+            <div class="hero-main">
+                <div class="hero-tags"><div class="tag"><i class="fa-solid fa-wave-square"></i> Real-time application desk</div><div class="tag"><i class="fa-solid fa-user-shield"></i> Super admin access</div></div>
+                <h2>Aisa dashboard jo dekhte hi premium lage.</h2>
+                <p>Review queue, assignments, document access aur approval actions ko ek stronger visual hierarchy me organize kiya gaya hai, bina kisi backend endpoint ko touch kiye.</p>
+                <div class="hero-actions"><button onclick="openStaffModal()" class="cta"><i class="fa-solid fa-users-gear"></i> Manage Team</button><button onclick="exportToExcel()" class="cta-lite"><i class="fa-solid fa-file-export"></i> Export CSV</button></div>
+            </div>
+            <div class="hero-side">
+                <div class="panel-head"><div><h3>Today's pulse</h3><p>Fast glance metrics for the review desk.</p></div><div class="trend"><i class="fa-solid fa-circle"></i> Live</div></div>
+                <div class="pulse">
+                    <div class="pulse-card"><div><small>Total records</small><strong id="heroTotal">0</strong><p>All applications in the current pipeline</p></div><div class="pulse-icon"><i class="fa-solid fa-layer-group"></i></div></div>
+                    <div class="pulse-card"><div><small>Pending queue</small><strong id="heroPending">0</strong><p>Applications waiting for review</p></div><div class="pulse-icon"><i class="fa-regular fa-hourglass-half"></i></div></div>
+                    <div class="pulse-card"><div><small>Completion rate</small><strong id="heroRate">0%</strong><p>Based on completed applications</p></div><div class="pulse-icon"><i class="fa-solid fa-chart-line"></i></div></div>
                 </div>
             </div>
-            </div>
+        </section>
+        <section class="stats">
+            <div class="stat st-total"><div class="stat-top"><div class="icon"><i class="fa-solid fa-users"></i></div><div class="micro">Master volume</div></div><h3 id="cTotal">0</h3><p>Total Applications</p><small>System me registered sabhi entries ka combined count.</small></div>
+            <div class="stat st-pending"><div class="stat-top"><div class="icon"><i class="fa-regular fa-clock"></i></div><div class="micro">Needs action</div></div><h3 id="cPen">0</h3><p>Pending Review</p><small>Jo applications abhi admin action ka wait kar rahi hain.</small></div>
+            <div class="stat st-completed"><div class="stat-top"><div class="icon"><i class="fa-solid fa-check-double"></i></div><div class="micro">Closed well</div></div><h3 id="cComp">0</h3><p>Completed</p><small>Approved ya properly closed records yahan reflect hote hain.</small></div>
+            <div class="stat st-rejected"><div class="stat-top"><div class="icon"><i class="fa-solid fa-ban"></i></div><div class="micro">Returned</div></div><h3 id="cRej">0</h3><p>Rejected</p><small>Remarks ke saath return ki gayi applications ka count.</small></div>
+        </section>
 
-        <div class="stats">
-            <div class="card st-total">
-                <div class="icon-box"><i class="fa-solid fa-users"></i></div>
-                <div class="st-info"><h3 id="cTotal">0</h3><p>Total Applications</p></div>
+        <section class="cat-wrap">
+            <div class="cat-head"><div><h3>Category distribution</h3><p>Quick composition snapshot for reservation segments.</p></div></div>
+            <div class="cats">
+                <div class="cat-card"><span>General</span><b id="catGen">0</b></div>
+                <div class="cat-card"><span>OBC</span><b id="catOBC">0</b></div>
+                <div class="cat-card"><span>SC</span><b id="catSC">0</b></div>
+                <div class="cat-card"><span>ST</span><b id="catST">0</b></div>
+                <div class="cat-card"><span>Minority</span><b id="catMin">0</b></div>
             </div>
-            <div class="card st-pending">
-                <div class="icon-box"><i class="fa-regular fa-clock"></i></div>
-                <div class="st-info"><h3 id="cPen">0</h3><p>Pending Review</p></div>
-            </div>
-            <div class="card st-completed">
-                <div class="icon-box"><i class="fa-solid fa-check-double"></i></div>
-                <div class="st-info"><h3 id="cComp">0</h3><p>Completed</p></div>
-            </div>
-            <div class="card st-rejected">
-                <div class="icon-box"><i class="fa-solid fa-ban"></i></div>
-                <div class="st-info"><h3 id="cRej">0</h3><p>Rejected</p></div>
-            </div>
-        </div>
+        </section>
 
-        <div class="cat-row">
-            <div class="cat-chip"><b>GEN</b> <span id="catGen">0</span></div>
-            <div class="cat-chip"><b>OBC</b> <span id="catOBC">0</span></div>
-            <div class="cat-chip"><b>SC</b> <span id="catSC">0</span></div>
-            <div class="cat-chip"><b>ST</b> <span id="catST">0</span></div>
-            <div class="cat-chip"><b>Min</b> <span id="catMin">0</span></div>
-        </div>
-
-        <div class="table-card">
-            <div class="table-header">
-                <h3><i class="fa-solid fa-list"></i> Applications</h3>
-                <div class="search-wrapper">
-                    <input type="text" id="search" class="search-inp" placeholder="🔍 Search by Name, SSO, or Mobile...">
-                    <button onclick="exportToExcel()" class="btn-excel"><i class="fa-solid fa-file-export"></i> Export CSV</button>
-                </div>
+        <section class="workspace">
+            <div class="table-head">
+                <div class="table-title"><h3><i class="fa-solid fa-list-check"></i> Application workflow</h3><p>Search, assign, review aur document action sab isi workspace me.</p></div>
+                <div class="toolbar"><div class="search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="search" placeholder="Search by name, SSO ID or mobile number"></div><button onclick="exportToExcel()" class="btn-excel"><i class="fa-solid fa-file-export"></i> Export CSV</button></div>
             </div>
-            <div class="table-responsive">
+            <div class="table-shell">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Student Info</th>
-                            <th>Category</th>
-                            <th>Course</th>
-                            <th>Status</th>
-                            <th>Assigned To</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                        <tr><td colspan="6" align="center" style="padding:30px;">Loading Data...</td></tr>
-                    </tbody>
+                    <thead><tr><th>Student Info</th><th>Category</th><th>Course</th><th>Status</th><th>Assigned To</th><th>Action</th></tr></thead>
+                    <tbody id="tableBody"><tr><td colspan="6"><div class="empty"><i class="fa-solid fa-spinner fa-spin"></i><div>Loading dashboard data...</div></div></td></tr></tbody>
                 </table>
             </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
-    <div id="modal" class="modal-overlay">
+    <div id="modal" class="overlay">
         <div class="modal">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-user-graduate"></i> Application Details</h3>
-                <i class="fa-solid fa-xmark" style="cursor:pointer; font-size:1.5rem;" onclick="closeModal()"></i>
-            </div>
-            <div class="modal-body" id="modalBody">
-                </div>
+            <div class="modal-top"><h3><i class="fa-solid fa-user-graduate"></i> Application Details</h3><button class="close-btn" onclick="closeModal()" aria-label="Close details"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="modal-body" id="modalBody"></div>
         </div>
     </div>
 
-    <div id="staffModal" class="modal-overlay">
-        <div class="modal" style="max-width: 600px;">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-users-gear"></i> Manage Team</h3>
-                <i class="fa-solid fa-xmark" style="cursor:pointer; font-size:1.5rem;" onclick="closeStaffModal()"></i>
-            </div>
+    <div id="staffModal" class="overlay">
+        <div class="modal" style="max-width:780px;">
+            <div class="modal-top"><h3><i class="fa-solid fa-users-gear"></i> Manage Team</h3><button class="close-btn" onclick="closeStaffModal()" aria-label="Close staff modal"><i class="fa-solid fa-xmark"></i></button></div>
             <div class="modal-body">
-                <div style="background:#f1f2f6; padding:15px; border-radius:10px; margin-bottom:20px; display:flex; gap:10px; flex-wrap:wrap;">
-                    <input type="text" id="empName" placeholder="Name" style="flex:1; padding:10px; border-radius:5px; border:1px solid #ddd;">
-                    <input type="text" id="empUser" placeholder="Username" style="flex:1; padding:10px; border-radius:5px; border:1px solid #ddd;">
-                    <input type="text" id="empPass" placeholder="Password" style="flex:1; padding:10px; border-radius:5px; border:1px solid #ddd;">
-                    <select id="empRole" style="padding:10px; border-radius:5px; border:1px solid #ddd;">
-                        <option value="field">Field Staff</option>
-                        <option value="filler">Office Team</option>
-                    </select>
-                    <button onclick="addEmployee()" style="background:var(--success); color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer;">Add</button>
+                <div class="staff-form">
+                    <input class="wide" type="text" id="empName" placeholder="Full Name">
+                    <input class="mid" type="text" id="empUser" placeholder="Username">
+                    <input class="mid" type="text" id="empPass" placeholder="Password">
+                    <select class="small" id="empRole"><option value="field">Field Staff</option><option value="filler">Office Team</option></select>
+                    <button onclick="addEmployee()" class="staff-add"><i class="fa-solid fa-plus"></i> Add Team Member</button>
                 </div>
-                <div id="empList" style="max-height:300px; overflow-y:auto;">Loading...</div>
+                <div id="empList" class="staff-list"><div class="empty">Loading team data...</div></div>
             </div>
         </div>
     </div>
 
     <script>
         const API_URL = "https://motion-banswara-portal.onrender.com/api";
-        let allStudents = [];
-        let staffList = [];
+        let allStudents = [], staffList = [];
+        const els = {
+            modal: document.getElementById('modal'),
+            modalBody: document.getElementById('modalBody'),
+            staffModal: document.getElementById('staffModal'),
+            cTotal: document.getElementById('cTotal'),
+            cPen: document.getElementById('cPen'),
+            cComp: document.getElementById('cComp'),
+            cRej: document.getElementById('cRej'),
+            heroTotal: document.getElementById('heroTotal'),
+            heroPending: document.getElementById('heroPending'),
+            heroRate: document.getElementById('heroRate'),
+            catGen: document.getElementById('catGen'),
+            catOBC: document.getElementById('catOBC'),
+            catSC: document.getElementById('catSC'),
+            catST: document.getElementById('catST'),
+            catMin: document.getElementById('catMin'),
+            empName: document.getElementById('empName'),
+            empUser: document.getElementById('empUser'),
+            empPass: document.getElementById('empPass'),
+            empRole: document.getElementById('empRole')
+        };
+        if (localStorage.getItem('isLoggedIn') !== 'true') window.location.href = "admin.html";
 
-        // Auth Check
-        if(localStorage.getItem('isLoggedIn') !== 'true') window.location.href = "admin.html";
+        function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('active'); }
+        function escapeHtml(v){ return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;').replace(/'/g,'&#39;'); }
+        function safeText(v,f='-'){ return v === null || v === undefined || v === '' ? f : escapeHtml(v); }
+        function formatCurrency(v){ const n = Number(v); return v === null || v === undefined || v === '' ? '-' : (Number.isNaN(n) ? escapeHtml(v) : n.toLocaleString('en-IN')); }
+        function setSyncStamp(){ document.getElementById('syncDate').innerText = new Date().toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
 
-        // Toggle Sidebar for Mobile
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-        }
-
-        async function loadData() {
-            try {
-                // Fetch Staff First
+        async function loadData(){
+            try{
                 const empRes = await fetch(`${API_URL}/employees`);
                 staffList = await empRes.json();
                 renderStaffList(staffList);
-
-                // Fetch Students
                 const res = await fetch(`${API_URL}/students`);
                 allStudents = await res.json();
-                
-                // Update Stats
                 updateStats(allStudents);
-                
-                // Render Table
                 renderTable(allStudents);
-            } catch(e) { console.error(e); }
+                setSyncStamp();
+            }catch(e){
+                console.error(e);
+                document.getElementById('tableBody').innerHTML = `<tr><td colspan="6"><div class="empty"><i class="fa-solid fa-circle-exclamation"></i><div>Unable to load data right now.</div></div></td></tr>`;
+            }
         }
 
-        function updateStats(data) {
-            document.getElementById('cTotal').innerText = data.length;
-            document.getElementById('cPen').innerText = data.filter(s => s.status === 'Pending').length;
-            document.getElementById('cComp').innerText = data.filter(s => s.status === 'Completed').length;
-            document.getElementById('cRej').innerText = data.filter(s => s.status === 'Rejected').length;
-
-            document.getElementById('catGen').innerText = data.filter(s => s.category === 'General').length;
-            document.getElementById('catOBC').innerText = data.filter(s => s.category === 'OBC').length;
-            document.getElementById('catSC').innerText = data.filter(s => s.category === 'SC').length;
-            document.getElementById('catST').innerText = data.filter(s => s.category === 'ST').length;
-            document.getElementById('catMin').innerText = data.filter(s => s.category === 'Minority').length;
+        function updateStats(data){
+            const total = data.length, pending = data.filter(s=>s.status==='Pending').length, completed = data.filter(s=>s.status==='Completed').length, rejected = data.filter(s=>s.status==='Rejected').length, rate = total ? Math.round(completed / total * 100) : 0;
+            els.cTotal.innerText = total; els.cPen.innerText = pending; els.cComp.innerText = completed; els.cRej.innerText = rejected;
+            els.heroTotal.innerText = total; els.heroPending.innerText = pending; els.heroRate.innerText = `${rate}%`;
+            els.catGen.innerText = data.filter(s=>s.category==='General').length;
+            els.catOBC.innerText = data.filter(s=>s.category==='OBC').length;
+            els.catSC.innerText = data.filter(s=>s.category==='SC').length;
+            els.catST.innerText = data.filter(s=>s.category==='ST').length;
+            els.catMin.innerText = data.filter(s=>s.category==='Minority').length;
         }
 
-        function renderTable(data) {
+        function renderTable(data){
             const tbody = document.getElementById('tableBody');
-            if(data.length === 0) { tbody.innerHTML = `<tr><td colspan="6" align="center" style="padding:20px;">📭 No Records Found</td></tr>`; return; }
-            
-            const fillers = staffList.filter(e => e.role === 'filler');
-
-            tbody.innerHTML = data.map(s => {
-                let options = `<option value="">Select Staff</option>`;
-                fillers.forEach(f => {
-                    options += `<option value="${f.username}" ${s.assignedTo === f.username ? 'selected' : ''}>${f.name}</option>`;
-                });
-
-                // Conditional Assign UI
-                let assignUI = (s.status === 'Pending' || s.status === 'Assigned') ? 
-                    `<div style="display:flex; gap:5px;">
-                        <select id="assign-${s._id}" style="padding:6px; border-radius:4px; border:1px solid #ddd; width:100px;">${options}</select>
-                        <button onclick="assignTask('${s._id}')" style="background:#2ed573; color:white; border:none; padding:0 8px; border-radius:4px; cursor:pointer;"><i class="fa-solid fa-check"></i></button>
-                    </div>` : 
-                    (s.assignedTo ? `<div style="color:#2c3e50; font-weight:600;"><i class="fa-solid fa-user-check"></i> ${s.assignedTo}</div>` : '<span style="color:#ccc">-</span>');
-
-                return `
-                <tr>
-                    <td>
-                        <div style="font-weight:600; color:#2d3436;">${s.studentName}</div>
-                        <div style="font-size:0.8rem; color:#636e72;">SSO: ${s.ssoId}</div>
-                        <div style="font-size:0.8rem; color:#636e72;">${s.mobile}</div>
-                    </td>
-                    <td>${s.category || '-'}</td>
-                    <td>${s.course || '-'}</td>
-                    <td><span class="badge b-${s.status}">${s.status}</span></td>
-                    <td>${assignUI}</td>
-                    <td><button onclick="viewDetails('${s._id}')" class="btn-action">View Details</button></td>
-                </tr>`;
+            if(!data.length){ tbody.innerHTML = `<tr><td colspan="6"><div class="empty"><i class="fa-regular fa-folder-open"></i><div>No records found for the current search.</div></div></td></tr>`; return; }
+            const fillers = staffList.filter(e=>e.role==='filler');
+            tbody.innerHTML = data.map(s=>{
+                let options = `<option value="">Select staff</option>`;
+                fillers.forEach(f=> options += `<option value="${escapeHtml(f.username)}" ${s.assignedTo===f.username?'selected':''}>${escapeHtml(f.name)}</option>`);
+                const assignUI = (s.status==='Pending' || s.status==='Assigned')
+                    ? `<div class="assign-wrap"><select id="assign-${s._id}">${options}</select><button onclick="assignTask('${s._id}')" aria-label="Assign task"><i class="fa-solid fa-check"></i></button></div>`
+                    : (s.assignedTo ? `<div class="assigned"><i class="fa-solid fa-user-check"></i> ${safeText(s.assignedTo)}</div>` : `<div class="assigned" style="color:var(--muted);font-weight:500;">Not assigned</div>`);
+                return `<tr><td><div class="student"><strong>${safeText(s.studentName)}</strong><div class="student-meta"><span><i class="fa-solid fa-id-card"></i> ${safeText(s.ssoId)}</span><span><i class="fa-solid fa-phone"></i> ${safeText(s.mobile)}</span></div></div></td><td>${safeText(s.category)}</td><td><span class="course"><i class="fa-solid fa-graduation-cap"></i> ${safeText(s.course)}</span></td><td><span class="badge b-${safeText(s.status,'Pending')}">${safeText(s.status)}</span></td><td>${assignUI}</td><td><button onclick="viewDetails('${s._id}')" class="view-btn">View Details</button></td></tr>`;
             }).join('');
         }
-
-        async function assignTask(id) {
+        async function assignTask(id){
             const filler = document.getElementById(`assign-${id}`).value;
-            if(!filler) return alert("Please select a staff member!");
-            await fetch(`${API_URL}/assign-task/${id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ assignedTo: filler }) });
-            alert("✅ Task Assigned Successfully!"); loadData();
-        }
-
-        // --- MODERN MODAL DETAILS ---
-        function viewDetails(id) {
-            const s = allStudents.find(d => d._id === id);
-            const html = `
-                <div class="full-info-grid">
-                    <div class="section-box">
-                        <h4><i class="fa-solid fa-user"></i> Personal Info</h4>
-                        <div class="data-row"><span>Student Name:</span> <b>${s.studentName}</b></div>
-                        <div class="data-row"><span>Father's Name:</span> <b>${s.fatherName}</b></div>
-                        <div class="data-row"><span>Mother's Name:</span> <b>${s.motherName}</b></div>
-                        <div class="data-row"><span>DOB:</span> <b>${s.dob}</b></div>
-                        <div class="data-row"><span>Category:</span> <b>${s.category}</b></div>
-                        <div class="data-row"><span>Income:</span> <b>₹${s.familyIncome}</b></div>
-                    </div>
-
-                    <div class="section-box">
-                        <h4><i class="fa-solid fa-graduation-cap"></i> Academic</h4>
-                        <div class="data-row"><span>School:</span> <b>${s.school}</b></div>
-                        <div class="data-row"><span>10th Roll No:</span> <b>${s.rollNumber}</b></div>
-                        <div class="data-row"><span>Percentage:</span> <b>${s.percentage}%</b></div>
-                        <div class="data-row"><span>Year:</span> <b>${s.passingYear}</b></div>
-                        <div class="data-row"><span>Course Choice:</span> <b>${s.course}</b></div>
-                    </div>
-
-                    <div class="section-box">
-                        <h4><i class="fa-solid fa-file-contract"></i> System & Docs</h4>
-                        <div class="data-row"><span>SSO ID:</span> <b>${s.ssoId}</b></div>
-                        <div class="data-row"><span>Password:</span> <b>${s.password || '-'}</b></div>
-                        <div class="data-row"><span>Jan Aadhar:</span> <b>${s.janAadhar || '-'}</b></div>
-                        <div class="data-row"><span>Entry By:</span> <b>${s.enteredBy || 'Unknown'}</b></div>
-                        <hr style="margin:10px 0; border:0; border-top:1px dashed #ddd;">
-                        <div>
-                            <a href="${s.marksheet10th}" target="_blank" class="doc-btn"><i class="fa-solid fa-download"></i> 10th Marksheet</a>
-                            <a href="${s.incomeProof}" target="_blank" class="doc-btn"><i class="fa-solid fa-download"></i> Income Proof</a>
-                        </div>
-                    </div>
-
-                    <div class="section-box action-box">
-                        <h4><i class="fa-solid fa-gavel"></i> Admin Action</h4>
-                        <div class="data-row"><span>Current Status:</span> <span class="badge b-${s.status}">${s.status}</span></div>
-                        <div class="data-row"><span>Previous Remark:</span> <b style="color:var(--danger)">${s.adminRemark || 'No Remarks'}</b></div>
-                        
-                        <div style="margin-top:15px;">
-                            <input type="text" id="remarkInput" class="remark-input" placeholder="✍️ Write a remark (Required for Rejection)..." value="${s.adminRemark || ''}">
-                            <div class="btn-group">
-                                <button onclick="updateStatus('${s._id}', 'Approved')" class="btn btn-approve"><i class="fa-solid fa-check"></i> Approve & Close</button>
-                                <button onclick="updateStatus('${s._id}', 'Rejected')" class="btn btn-reject"><i class="fa-solid fa-xmark"></i> Reject & Return</button>
-                            </div>
-                            <button onclick="deleteStudent('${s._id}')" class="btn btn-delete"><i class="fa-solid fa-trash"></i> Delete Application</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.getElementById('modalBody').innerHTML = html;
-            document.getElementById('modal').style.display = 'flex';
-        }
-
-        function closeModal() { document.getElementById('modal').style.display = 'none'; }
-
-        async function updateStatus(id, status) {
-            const remark = document.getElementById('remarkInput').value;
-            if(status === 'Rejected' && !remark) return alert("⚠️ Please enter a remark for rejection!");
-            
-            const finalStatus = status === 'Approved' ? 'Completed' : status; 
-            
-            // Add loading state
-            const btn = document.querySelector('.btn-approve'); // just targeting one for visual
-            if(btn) btn.innerHTML = 'Processing...';
-
-            await fetch(`${API_URL}/update-status/${id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ status: finalStatus, remark }) });
-            closeModal(); loadData();
-        }
-
-        async function deleteStudent(id) { 
-            if(confirm("⚠️ Are you sure you want to delete this student permanently?")) { 
-                await fetch(`${API_URL}/students/${id}`, { method: 'DELETE' }); 
-                closeModal(); loadData(); 
-            } 
-        }
-        
-        // Export Excel
-        function exportToExcel() {
-            if(allStudents.length===0) return alert("No Data to Export");
-            let csv = "Name,Father,Mobile,Category,Percentage,SSO ID,Password,Course,Status,Assigned To,Remark\n";
-            allStudents.forEach(s => {
-                csv += `"${s.studentName}","${s.fatherName}","${s.mobile}","${s.category}","${s.percentage}","${s.ssoId}","${s.password}","${s.course}","${s.status}","${s.assignedTo || ''}","${s.adminRemark || ''}"\n`;
-            });
-            const link = document.createElement('a'); link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); link.download = 'Motion_Students_Report.csv'; link.click();
-        }
-
-        // Staff Functions
-        function openStaffModal() { document.getElementById('staffModal').style.display = 'flex'; }
-        function closeStaffModal() { document.getElementById('staffModal').style.display = 'none'; }
-        
-        function renderStaffList(emps) { 
-            document.getElementById('empList').innerHTML = emps.map(e => `
-                <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee; align-items:center; background:white;">
-                    <div><b>${e.name}</b> <br><small style="color:#888">${e.role.toUpperCase()}</small></div>
-                    <button onclick="delEmp('${e._id}')" style="color:#ff4757; border:none; background:rgba(255, 71, 87, 0.1); width:30px; height:30px; border-radius:50%; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
-                </div>`).join(''); 
-        }
-
-        async function addEmployee() { 
-            const name=document.getElementById('empName').value, user=document.getElementById('empUser').value, pass=document.getElementById('empPass').value, role=document.getElementById('empRole').value;
-            if(!name || !user || !pass) return alert("Fill all fields");
-            await fetch(`${API_URL}/add-employee`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name, username:user, password:pass, role}) });
-            document.getElementById('empName').value = ''; document.getElementById('empUser').value = ''; document.getElementById('empPass').value = '';
+            if(!filler) return alert("Please select a staff member.");
+            await fetch(`${API_URL}/assign-task/${id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({assignedTo:filler})});
+            alert("Task assigned successfully.");
             loadData();
         }
-        async function delEmp(id) { if(confirm("Remove this staff member?")) { await fetch(`${API_URL}/employees/${id}`, {method:'DELETE'}); loadData(); } }
 
-        function logout() { localStorage.removeItem('isLoggedIn'); window.location.href = "admin.html"; }
-        
-        // Search Filter
-        document.getElementById('search').addEventListener('input', (e) => {
+        function viewDetails(id){
+            const s = allStudents.find(d=>d._id===id);
+            if(!s) return;
+            els.modalBody.innerHTML = `<div class="detail-grid">
+                <div class="detail-box"><h4><i class="fa-solid fa-user"></i> Personal Info</h4><div class="row"><span>Student Name</span><b>${safeText(s.studentName)}</b></div><div class="row"><span>Father's Name</span><b>${safeText(s.fatherName)}</b></div><div class="row"><span>Mother's Name</span><b>${safeText(s.motherName)}</b></div><div class="row"><span>Date of Birth</span><b>${safeText(s.dob)}</b></div><div class="row"><span>Category</span><b>${safeText(s.category)}</b></div><div class="row"><span>Family Income</span><b>Rs ${formatCurrency(s.familyIncome)}</b></div></div>
+                <div class="detail-box"><h4><i class="fa-solid fa-graduation-cap"></i> Academic</h4><div class="row"><span>School</span><b>${safeText(s.school)}</b></div><div class="row"><span>10th Roll No</span><b>${safeText(s.rollNumber)}</b></div><div class="row"><span>Percentage</span><b>${safeText(s.percentage)}%</b></div><div class="row"><span>Passing Year</span><b>${safeText(s.passingYear)}</b></div><div class="row"><span>Course Choice</span><b>${safeText(s.course)}</b></div></div>
+                <div class="detail-box"><h4><i class="fa-solid fa-file-contract"></i> System & Docs</h4><div class="row"><span>SSO ID</span><b>${safeText(s.ssoId)}</b></div><div class="row"><span>Password</span><b>${safeText(s.password)}</b></div><div class="row"><span>Jan Aadhar</span><b>${safeText(s.janAadhar)}</b></div><div class="row"><span>Entry By</span><b>${safeText(s.enteredBy,'Unknown')}</b></div><div class="docs">${s.marksheet10th ? `<a href="${escapeHtml(s.marksheet10th)}" target="_blank" class="doc"><i class="fa-solid fa-download"></i> 10th Marksheet</a>` : ''}${s.incomeProof ? `<a href="${escapeHtml(s.incomeProof)}" target="_blank" class="doc"><i class="fa-solid fa-download"></i> Income Proof</a>` : ''}</div></div>
+                <div class="detail-box action-box"><h4><i class="fa-solid fa-gavel"></i> Admin Action</h4><div class="status-row"><div><div class="sub" style="margin-bottom:6px;">Current Status</div><span class="badge b-${safeText(s.status,'Pending')}">${safeText(s.status)}</span></div><div><div class="sub" style="margin-bottom:6px;">Assigned Staff</div><div class="assigned">${s.assignedTo ? `<i class="fa-solid fa-user-check"></i> ${safeText(s.assignedTo)}` : 'Not assigned yet'}</div></div></div><div class="remark-box"><strong>Previous Remark</strong><div>${safeText(s.adminRemark,'No remarks added yet')}</div></div><input type="text" id="remarkInput" class="remark-input" placeholder="Write a remark. Rejection requires a remark." value="${escapeHtml(s.adminRemark || '')}"><div class="btn-row"><button onclick="updateStatus('${s._id}','Approved')" class="btn approve"><i class="fa-solid fa-check"></i> Approve & Close</button><button onclick="updateStatus('${s._id}','Rejected')" class="btn reject"><i class="fa-solid fa-xmark"></i> Reject & Return</button></div><button onclick="deleteStudent('${s._id}')" class="btn delete"><i class="fa-solid fa-trash"></i> Delete Application</button></div>
+            </div>`;
+            els.modal.style.display = 'flex';
+        }
+
+        function closeModal(){ els.modal.style.display = 'none'; }
+        async function updateStatus(id,status){
+            const remark = document.getElementById('remarkInput').value;
+            if(status === 'Rejected' && !remark) return alert("Please enter a remark for rejection.");
+            const finalStatus = status === 'Approved' ? 'Completed' : status;
+            const btn = document.querySelector('.approve'); if(btn) btn.innerHTML = 'Processing...';
+            await fetch(`${API_URL}/update-status/${id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:finalStatus,remark})});
+            closeModal(); loadData();
+        }
+        async function deleteStudent(id){ if(confirm("Are you sure you want to delete this student permanently?")){ await fetch(`${API_URL}/students/${id}`,{method:'DELETE'}); closeModal(); loadData(); } }
+        function exportToExcel(){
+            if(!allStudents.length) return alert("No data to export.");
+            let csv = "Name,Father,Mobile,Category,Percentage,SSO ID,Password,Course,Status,Assigned To,Remark\n";
+            allStudents.forEach(s=> csv += `"${s.studentName}","${s.fatherName}","${s.mobile}","${s.category}","${s.percentage}","${s.ssoId}","${s.password}","${s.course}","${s.status}","${s.assignedTo || ''}","${s.adminRemark || ''}"\n`);
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+            link.download = 'Motion_Students_Report.csv';
+            link.click();
+        }
+
+        function openStaffModal(){ els.staffModal.style.display = 'flex'; }
+        function closeStaffModal(){ els.staffModal.style.display = 'none'; }
+        function renderStaffList(emps){
+            const box = document.getElementById('empList');
+            if(!emps.length){ box.innerHTML = `<div class="empty">No team members added yet.</div>`; return; }
+            box.innerHTML = emps.map(e=>`<div class="staff-item"><div><strong>${safeText(e.name)}</strong><div class="staff-role">${safeText(e.role).toUpperCase()}</div></div><button onclick="delEmp('${e._id}')" class="trash" aria-label="Delete ${safeText(e.name)}"><i class="fa-solid fa-trash"></i></button></div>`).join('');
+        }
+        async function addEmployee(){
+            const name = els.empName.value, user = els.empUser.value, pass = els.empPass.value, role = els.empRole.value;
+            if(!name || !user || !pass) return alert("Fill all fields.");
+            await fetch(`${API_URL}/add-employee`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,username:user,password:pass,role})});
+            els.empName.value=''; els.empUser.value=''; els.empPass.value=''; loadData();
+        }
+        async function delEmp(id){ if(confirm("Remove this staff member?")){ await fetch(`${API_URL}/employees/${id}`,{method:'DELETE'}); loadData(); } }
+        function logout(){ localStorage.removeItem('isLoggedIn'); window.location.href = "admin.html"; }
+
+        document.getElementById('search').addEventListener('input', e => {
             const term = e.target.value.toLowerCase();
-            const filtered = allStudents.filter(s => 
-                s.studentName.toLowerCase().includes(term) || 
-                s.mobile.includes(term) || 
-                s.ssoId.toLowerCase().includes(term)
-            );
-            renderTable(filtered);
+            renderTable(allStudents.filter(s => (s.studentName || '').toLowerCase().includes(term) || (s.mobile || '').includes(term) || (s.ssoId || '').toLowerCase().includes(term)));
         });
-
-        // Initialize
+        document.getElementById('modal').addEventListener('click', e => { if(e.target.id === 'modal') closeModal(); });
+        document.getElementById('staffModal').addEventListener('click', e => { if(e.target.id === 'staffModal') closeStaffModal(); });
         loadData();
     </script>
 </body>
