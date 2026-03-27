@@ -88,8 +88,78 @@
         .staff-form{padding:18px;border-radius:24px;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px;margin-bottom:18px}.staff-form .wide{grid-column:span 4}.staff-form .mid{grid-column:span 3}.staff-form .small{grid-column:span 2}.staff-add{grid-column:1/-1;justify-self:start;background:linear-gradient(135deg,#178d62,#28ad7a);color:#fff}.staff-list{display:grid;gap:10px}.staff-item{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-radius:18px}
         .staff-role{display:inline-flex;padding:7px 10px;border-radius:999px;background:rgba(44,108,222,.1);color:var(--blue);font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em}.trash{width:40px;height:40px;border:none;border-radius:14px;background:rgba(215,75,75,.1);color:var(--red);cursor:pointer}
         @media (max-width:1220px){.hero-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.cats{grid-template-columns:repeat(3,minmax(0,1fr))}.detail-box{grid-column:span 6}}
-        @media (max-width:920px){.sidebar{width:min(320px,calc(100vw - 28px))}.main{padding:18px 16px 28px}.topbar{align-items:flex-start;flex-direction:column}.live-pill{width:100%;justify-content:center}}
-        @media (max-width:760px){.hero-grid,.stats,.cats,.quick-grid{grid-template-columns:1fr}.table-head,.btn-row{flex-direction:column;align-items:stretch}.toolbar,.search{width:100%}.search{min-width:0}.btn-excel{width:100%}.detail-box{grid-column:1/-1}.row{grid-template-columns:1fr}.row b{text-align:left}.staff-form{grid-template-columns:1fr}.staff-form .wide,.staff-form .mid,.staff-form .small,.staff-add{grid-column:auto}}
+        @media (max-width:920px){
+            .sidebar{width:min(320px,calc(100vw - 28px))}
+            .main{padding:18px 16px 28px}
+            .topbar{align-items:flex-start;flex-direction:column}
+            .top-left{width:100%}
+            .top-left > div:last-child{flex:1}
+            .live-pill{width:100%;justify-content:center}
+            .hero-main,.hero-side,.workspace,.modal,.cat-wrap{border-radius:24px}
+            .hero-main,.hero-side,.workspace,.cat-wrap{padding:22px}
+            .hero-actions{flex-wrap:wrap}
+            .cta,.cta-lite{flex:1}
+            .search{min-width:0}
+        }
+        @media (max-width:760px){
+            .main{padding:14px 12px 24px}
+            .hero-grid,.stats,.quick-grid{grid-template-columns:1fr}
+            .cats{grid-template-columns:repeat(2,minmax(0,1fr))}
+            .table-head,.btn-row,.hero-actions,.hero-tags,.status-row,.toolbar,.staff-item{flex-direction:column;align-items:stretch}
+            .topbar{gap:12px}
+            .top-left{align-items:flex-start}
+            .toggle{width:44px;height:44px}
+            h1{font-size:clamp(1.65rem,8vw,2.15rem)}
+            .sub{font-size:.95rem}
+            .live-pill{justify-content:flex-start;border-radius:20px}
+            .live-pill strong{font-size:1rem}
+            .hero-main,.hero-side,.workspace,.cat-wrap{padding:18px}
+            .hero-main h2{font-size:clamp(1.8rem,8vw,2.35rem)}
+            .hero-main p,.pulse-card p,.table-title p,.cat-head p{font-size:.9rem}
+            .tag,.cta,.cta-lite,.btn-excel,.btn,.staff-add{width:100%}
+            .pulse-card{padding:14px 16px}
+            .stats{gap:12px}
+            .stat{padding:18px;border-radius:20px}
+            .stat h3{font-size:1.8rem}
+            .cat-card{padding:14px 16px}
+            .table-shell{overflow:visible;background:transparent;border:none}
+            table{min-width:0}
+            .detail-box{grid-column:1/-1}
+            .row{grid-template-columns:1fr}
+            .row b{text-align:left}
+            .staff-form{grid-template-columns:1fr;padding:16px}
+            .staff-form .wide,.staff-form .mid,.staff-form .small,.staff-add{grid-column:auto}
+            .assign-wrap{min-width:0;flex-direction:column;align-items:stretch}
+            .assign-wrap button{width:100%}
+            .modal{width:100%;max-height:calc(100vh - 18px);border-radius:22px}
+            .modal-top,.modal-body{padding:18px}
+            .overlay{padding:9px}
+            .staff-item{gap:12px}
+        }
+        @media (max-width:640px){
+            .sidebar{width:min(92vw,320px);padding:18px 14px}
+            .logo{padding:14px}
+            .brand-chip,.note,.sidebar-quick{display:none}
+            .sidebar-section{padding:10px}
+            .menu a{padding:12px 14px}
+            .menu-copy strong{font-size:.92rem}
+            .menu-copy small{font-size:.74rem}
+            .cats{grid-template-columns:1fr}
+            thead{display:none}
+            table,tbody,tr,td{display:block;width:100%}
+            tbody{display:grid;gap:12px}
+            tbody tr{padding:14px;border-radius:20px;background:#ffffffe8;border:1px solid var(--line);box-shadow:0 12px 28px rgba(17,12,46,.06)}
+            tbody td{padding:10px 0;border-bottom:1px dashed var(--line)}
+            tbody td:last-child{border-bottom:none;padding-bottom:0}
+            tbody td::before{content:attr(data-label);display:block;margin-bottom:6px;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+            tbody td[data-label="Student Info"]::before{margin-bottom:10px}
+            .view-btn{width:100%}
+            .empty{padding:28px 18px}
+            .modal-top h3{font-size:1rem}
+            .detail-box{padding:16px;border-radius:20px}
+            .docs{flex-direction:column}
+            .doc{justify-content:center}
+        }
     </style>
 </head>
 <body>
@@ -328,7 +398,7 @@
                 const assignUI = (s.status==='Pending' || s.status==='Assigned')
                     ? `<div class="assign-wrap"><select id="assign-${s._id}">${options}</select><button onclick="assignTask('${s._id}')" aria-label="Assign task"><i class="fa-solid fa-check"></i></button></div>`
                     : (s.assignedTo ? `<div class="assigned"><i class="fa-solid fa-user-check"></i> ${safeText(s.assignedTo)}</div>` : `<div class="assigned" style="color:var(--muted);font-weight:500;">Not assigned</div>`);
-                return `<tr><td><div class="student"><strong>${safeText(s.studentName)}</strong><div class="student-meta"><span><i class="fa-solid fa-id-card"></i> ${safeText(s.ssoId)}</span><span><i class="fa-solid fa-phone"></i> ${safeText(s.mobile)}</span></div></div></td><td>${safeText(s.category)}</td><td><span class="course"><i class="fa-solid fa-graduation-cap"></i> ${safeText(s.course)}</span></td><td><span class="badge b-${safeText(s.status,'Pending')}">${safeText(s.status)}</span></td><td>${assignUI}</td><td><button onclick="viewDetails('${s._id}')" class="view-btn">View Details</button></td></tr>`;
+                return `<tr><td data-label="Student Info"><div class="student"><strong>${safeText(s.studentName)}</strong><div class="student-meta"><span><i class="fa-solid fa-id-card"></i> ${safeText(s.ssoId)}</span><span><i class="fa-solid fa-phone"></i> ${safeText(s.mobile)}</span></div></div></td><td data-label="Category">${safeText(s.category)}</td><td data-label="Course"><span class="course"><i class="fa-solid fa-graduation-cap"></i> ${safeText(s.course)}</span></td><td data-label="Status"><span class="badge b-${safeText(s.status,'Pending')}">${safeText(s.status)}</span></td><td data-label="Assigned To">${assignUI}</td><td data-label="Action"><button onclick="viewDetails('${s._id}')" class="view-btn">View Details</button></td></tr>`;
             }).join('');
         }
         async function assignTask(id){
