@@ -7,22 +7,50 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root{--bg:#f6f0e8;--panel:#ffffffd9;--line:#1b24301a;--text:#18212b;--muted:#677487;--brand:#d56a30;--blue:#2c6cde;--green:#1d9a6c;--red:#d74b4b;--amber:#d39a20;--shadow:0 24px 60px rgba(17,12,46,.10)}
+        :root{--bg:#f6f0e8;--panel:#ffffffd9;--line:#1b24301a;--text:#18212b;--muted:#677487;--brand:#d56a30;--blue:#2c6cde;--green:#1d9a6c;--red:#d74b4b;--amber:#d39a20;--shadow:0 24px 60px rgba(17,12,46,.10);--sidebar:#101417;--sidebar-line:rgba(255,255,255,.08);--sidebar-soft:rgba(255,255,255,.06)}
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Outfit',sans-serif}
         body{min-height:100vh;display:flex;color:var(--text);background:radial-gradient(circle at top left,rgba(213,106,48,.16),transparent 28%),radial-gradient(circle at right top,rgba(44,108,222,.12),transparent 24%),linear-gradient(180deg,#f8f4ed 0%,#f1ece5 100%);overflow-x:hidden}
+        body.sidebar-open{overflow:hidden}
         a{text-decoration:none;color:inherit}button,input,select{font:inherit}
-        .sidebar{position:fixed;inset:0 auto 0 0;width:286px;padding:24px;display:flex;flex-direction:column;background:linear-gradient(180deg,#1b1b1b 0%,#111 100%);color:#f7f2ec;border-right:1px solid rgba(255,255,255,.07);box-shadow:20px 0 50px rgba(0,0,0,.16);z-index:10;transition:transform .3s ease}
-        .logo{display:flex;align-items:center;gap:14px;padding:18px;border-radius:24px;background:linear-gradient(135deg,rgba(213,106,48,.22),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.07);margin-bottom:24px}
+        .sidebar{position:fixed;inset:0 auto 0 0;width:300px;padding:22px 18px;display:flex;flex-direction:column;background:linear-gradient(180deg,#161b1f 0%,#0f1316 100%);color:#f7f2ec;border-right:1px solid var(--sidebar-line);box-shadow:22px 0 60px rgba(0,0,0,.20);z-index:30;transition:transform .3s ease;transform:translateX(-100%)}
+        .sidebar.active{transform:translateX(0)}
+        .sidebar::before{content:"";position:absolute;inset:0 0 auto 0;height:200px;background:radial-gradient(circle at top left,rgba(213,106,48,.30),transparent 52%),radial-gradient(circle at top right,rgba(44,108,222,.16),transparent 38%);pointer-events:none;opacity:.95}
+        .sidebar > *{position:relative;z-index:1}
+        .sidebar-head{display:grid;gap:14px;margin-bottom:18px}
+        .logo{display:flex;align-items:center;gap:14px;padding:18px;border-radius:26px;background:linear-gradient(135deg,rgba(213,106,48,.24),rgba(255,255,255,.06));border:1px solid var(--sidebar-line)}
         .logo-badge{width:52px;height:52px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,#f0894c,#c85621);font-size:1.2rem;box-shadow:0 12px 24px rgba(213,106,48,.3)}
-        .logo small,.nav-label{display:block;text-transform:uppercase;letter-spacing:.18em;font-size:.7rem;color:rgba(255,255,255,.45)}
-        .logo strong{display:block;margin-top:4px;font-size:1.2rem}.nav-label{padding:0 8px 12px}
-        .menu{display:flex;flex-direction:column;gap:10px}.menu a{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-radius:18px;color:rgba(255,255,255,.75);border:1px solid transparent;transition:.22s ease}.menu a span{display:flex;align-items:center;gap:12px}
-        .menu a:hover,.menu a.active{background:linear-gradient(135deg,rgba(213,106,48,.22),rgba(255,255,255,.05));color:#fff;border-color:rgba(255,255,255,.07);transform:translateX(4px)}
-        .logout{margin-top:10px;background:rgba(215,75,75,.13)!important;color:#ffc3c3!important;border-color:rgba(215,75,75,.15)!important}.sidebar-fill{flex:1}
-        .note{margin-top:18px;padding:18px;border-radius:22px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07)}.note strong{display:block;margin-bottom:8px}.note p{font-size:.87rem;line-height:1.6;color:rgba(255,255,255,.62)}
-        .main{width:calc(100% - 286px);margin-left:286px;padding:28px;position:relative}
+        .logo small,.nav-label,.brand-chip,.quick-label,.note-label{display:block;text-transform:uppercase;letter-spacing:.18em;font-size:.7rem;color:rgba(255,255,255,.45)}
+        .logo strong{display:block;margin-top:4px;font-size:1.2rem}
+        .brand-chip{padding:10px 14px;border-radius:999px;background:var(--sidebar-soft);border:1px solid var(--sidebar-line);width:max-content;max-width:100%}
+        .sidebar-section{padding:14px;border-radius:24px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);backdrop-filter:blur(10px)}
+        .nav-label{padding:0 6px 12px}
+        .menu{display:flex;flex-direction:column;gap:10px}
+        .menu a{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-radius:20px;color:rgba(255,255,255,.82);border:1px solid transparent;transition:.22s ease}
+        .menu-copy{display:flex;align-items:center;gap:12px}
+        .menu-copy i{width:40px;height:40px;border-radius:14px;display:grid;place-items:center;background:rgba(255,255,255,.06);color:#ffd6be}
+        .menu-copy strong{display:block;font-size:.97rem;font-weight:600}
+        .menu-copy small{display:block;margin-top:3px;font-size:.78rem;color:rgba(255,255,255,.5)}
+        .menu a > i{color:rgba(255,255,255,.28);transition:transform .22s ease,color .22s ease}
+        .menu a:hover,.menu a.active{background:linear-gradient(135deg,rgba(213,106,48,.22),rgba(255,255,255,.05));color:#fff;border-color:var(--sidebar-line);transform:translateX(4px)}
+        .menu a:hover > i,.menu a.active > i{transform:translateX(3px);color:#fff}
+        .sidebar-fill{flex:1}
+        .sidebar-quick{margin-top:18px;padding:18px;border-radius:24px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));border:1px solid var(--sidebar-line)}
+        .quick-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
+        .quick-head strong{display:block;font-size:1rem}
+        .quick-head span{font-size:.78rem;color:rgba(255,255,255,.64);text-align:right}
+        .quick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+        .quick-item{padding:12px 14px;border-radius:18px;background:rgba(11,16,20,.48);border:1px solid rgba(255,255,255,.05)}
+        .quick-item span{display:block;font-size:.76rem;color:rgba(255,255,255,.52);margin-bottom:6px}
+        .quick-item strong{font-size:1.34rem}
+        .logout{margin-top:12px;background:rgba(215,75,75,.13)!important;color:#ffc3c3!important;border-color:rgba(215,75,75,.15)!important}
+        .note{margin-top:18px;padding:18px;border-radius:24px;background:rgba(255,255,255,.05);border:1px solid var(--sidebar-line)}
+        .note strong{display:block;margin:8px 0 6px;font-size:1rem}
+        .note p{font-size:.87rem;line-height:1.6;color:rgba(255,255,255,.62)}
+        .sidebar-backdrop{position:fixed;inset:0;background:rgba(9,12,14,.42);backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:25}
+        .sidebar-backdrop.active{opacity:1;pointer-events:auto}
+        .main{width:100%;margin-left:0;padding:28px;position:relative}
         .topbar,.table-head,.hero-actions,.hero-tags,.modal-top,.status-row,.btn-row{display:flex;gap:16px}.topbar{justify-content:space-between;align-items:center;margin-bottom:22px}.top-left{display:flex;align-items:center;gap:14px}
-        .toggle{display:none;width:48px;height:48px;border:none;border-radius:16px;background:#ffffffe6;box-shadow:0 10px 24px rgba(17,12,46,.08);cursor:pointer}.eyebrow{font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;color:var(--brand);font-weight:700;margin-bottom:8px}
+        .toggle{display:grid;place-items:center;width:48px;height:48px;border:none;border-radius:16px;background:#ffffffe6;box-shadow:0 10px 24px rgba(17,12,46,.08);cursor:pointer;flex-shrink:0}.toggle.active{background:#1a2229;color:#fff}.eyebrow{font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;color:var(--brand);font-weight:700;margin-bottom:8px}
         h1{font-size:clamp(1.9rem,2.3vw,2.7rem);line-height:1}.sub{color:var(--muted)}
         .live-pill{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:999px;background:#ffffffe6;border:1px solid var(--line);box-shadow:0 12px 28px rgba(17,12,46,.06)}
         .hero-grid{display:grid;grid-template-columns:1.45fr .9fr;gap:16px;margin-bottom:20px}.hero-main,.hero-side,.stat,.cat-card,.workspace,.modal,.detail-box,.staff-form,.staff-item{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow)}
@@ -60,28 +88,78 @@
         .staff-form{padding:18px;border-radius:24px;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px;margin-bottom:18px}.staff-form .wide{grid-column:span 4}.staff-form .mid{grid-column:span 3}.staff-form .small{grid-column:span 2}.staff-add{grid-column:1/-1;justify-self:start;background:linear-gradient(135deg,#178d62,#28ad7a);color:#fff}.staff-list{display:grid;gap:10px}.staff-item{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-radius:18px}
         .staff-role{display:inline-flex;padding:7px 10px;border-radius:999px;background:rgba(44,108,222,.1);color:var(--blue);font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em}.trash{width:40px;height:40px;border:none;border-radius:14px;background:rgba(215,75,75,.1);color:var(--red);cursor:pointer}
         @media (max-width:1220px){.hero-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.cats{grid-template-columns:repeat(3,minmax(0,1fr))}.detail-box{grid-column:span 6}}
-        @media (max-width:920px){.sidebar{transform:translateX(-100%)}.sidebar.active{transform:translateX(0)}.main{width:100%;margin-left:0;padding:18px 16px 28px}.toggle{display:grid;place-items:center}.topbar{align-items:flex-start;flex-direction:column}.live-pill{width:100%;justify-content:center}}
-        @media (max-width:760px){.hero-grid,.stats,.cats{grid-template-columns:1fr}.table-head,.btn-row{flex-direction:column;align-items:stretch}.toolbar,.search{width:100%}.search{min-width:0}.btn-excel{width:100%}.detail-box{grid-column:1/-1}.row{grid-template-columns:1fr}.row b{text-align:left}.staff-form{grid-template-columns:1fr}.staff-form .wide,.staff-form .mid,.staff-form .small,.staff-add{grid-column:auto}}
+        @media (max-width:920px){.sidebar{width:min(320px,calc(100vw - 28px))}.main{padding:18px 16px 28px}.topbar{align-items:flex-start;flex-direction:column}.live-pill{width:100%;justify-content:center}}
+        @media (max-width:760px){.hero-grid,.stats,.cats,.quick-grid{grid-template-columns:1fr}.table-head,.btn-row{flex-direction:column;align-items:stretch}.toolbar,.search{width:100%}.search{min-width:0}.btn-excel{width:100%}.detail-box{grid-column:1/-1}.row{grid-template-columns:1fr}.row b{text-align:left}.staff-form{grid-template-columns:1fr}.staff-form .wide,.staff-form .mid,.staff-form .small,.staff-add{grid-column:auto}}
     </style>
 </head>
 <body>
-    <aside class="sidebar" id="sidebar">
-        <div class="logo"><div class="logo-badge"><i class="fa-solid fa-shield-halved"></i></div><div><small>Motion Banswara</small><strong>Admin Command</strong></div></div>
-        <div class="nav-label">Navigation</div>
-        <div class="menu">
-            <a href="#" class="active"><span><i class="fa-solid fa-chart-pie"></i> Dashboard</span><i class="fa-solid fa-arrow-right"></i></a>
-            <a href="#" onclick="openStaffModal()"><span><i class="fa-solid fa-users-gear"></i> Manage Staff</span><i class="fa-solid fa-arrow-right"></i></a>
-            <a href="viewer_login.html"><span><i class="fa-solid fa-eye"></i> Observer Mode</span><i class="fa-solid fa-arrow-right"></i></a>
-            <div class="sidebar-fill"></div>
-            <a href="#" onclick="logout()" class="logout"><span><i class="fa-solid fa-power-off"></i> Logout</span><i class="fa-solid fa-arrow-right"></i></a>
+    <aside class="sidebar" id="sidebar" aria-hidden="false">
+        <div class="sidebar-head">
+            <div class="logo">
+                <div class="logo-badge"><i class="fa-solid fa-shield-halved"></i></div>
+                <div><small>Motion Banswara</small><strong>Admin Command</strong></div>
+            </div>
+            <div class="brand-chip">Secure admin workspace</div>
         </div>
-        <div class="note"><strong>Control room live</strong><p>Applications, assignments aur review flow ko ek hi jagah se premium feel ke saath handle karo.</p></div>
+        <div class="sidebar-section">
+            <div class="nav-label">Workspace</div>
+            <div class="menu">
+                <a href="#" class="active" onclick="closeSidebar(); return false;">
+                    <span class="menu-copy">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span><strong>Dashboard</strong><small>Overview and application desk</small></span>
+                    </span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="#" onclick="openStaffModal(); closeSidebar(); return false;">
+                    <span class="menu-copy">
+                        <i class="fa-solid fa-users-gear"></i>
+                        <span><strong>Manage Staff</strong><small>Add, remove and monitor team</small></span>
+                    </span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="viewer_login.html" onclick="closeSidebar()">
+                    <span class="menu-copy">
+                        <i class="fa-solid fa-eye"></i>
+                        <span><strong>Observer Mode</strong><small>Read-only viewing access</small></span>
+                    </span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <div class="sidebar-fill"></div>
+                <a href="#" onclick="logout(); return false;" class="logout">
+                    <span class="menu-copy">
+                        <i class="fa-solid fa-power-off"></i>
+                        <span><strong>Logout</strong><small>Exit the admin session safely</small></span>
+                    </span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="sidebar-quick">
+            <div class="quick-head">
+                <div>
+                    <div class="quick-label">Desk status</div>
+                    <strong>Live queue snapshot</strong>
+                </div>
+                <span id="sidebarSync">Waiting for sync</span>
+            </div>
+            <div class="quick-grid">
+                <div class="quick-item"><span>Pending</span><strong id="sidePending">0</strong></div>
+                <div class="quick-item"><span>Completed</span><strong id="sideCompleted">0</strong></div>
+            </div>
+        </div>
+        <div class="note">
+            <div class="note-label">Control note</div>
+            <strong>Sidebar ab focused rahega</strong>
+            <p>Mobile par ye tabhi open hoga jab toggle dabega, aur outside click ya Esc par turant close ho jayega.</p>
+        </div>
     </aside>
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()" aria-hidden="true"></div>
 
     <main class="main">
         <div class="topbar">
             <div class="top-left">
-                <button class="toggle" onclick="toggleSidebar()" aria-label="Toggle sidebar"><i class="fa-solid fa-bars"></i></button>
+                <button class="toggle" id="sidebarToggle" onclick="toggleSidebar()" aria-label="Toggle sidebar" aria-expanded="false" aria-controls="sidebar"><i class="fa-solid fa-bars"></i></button>
                 <div><div class="eyebrow">Admin Overview</div><h1>Premium control dashboard</h1><p class="sub">Backend untouched hai, lekin admin panel ab kaafi polished aur client-facing lagta hai.</p></div>
             </div>
             <div class="live-pill"><i class="fa-regular fa-clock"></i><div><strong id="syncDate">Live sync pending</strong><div class="sub">Latest refresh</div></div></div>
@@ -162,6 +240,10 @@
         const API_URL = "https://motion-banswara-portal.onrender.com/api";
         let allStudents = [], staffList = [];
         const els = {
+            body: document.body,
+            sidebar: document.getElementById('sidebar'),
+            sidebarBackdrop: document.getElementById('sidebarBackdrop'),
+            sidebarToggle: document.getElementById('sidebarToggle'),
             modal: document.getElementById('modal'),
             modalBody: document.getElementById('modalBody'),
             staffModal: document.getElementById('staffModal'),
@@ -177,6 +259,9 @@
             catSC: document.getElementById('catSC'),
             catST: document.getElementById('catST'),
             catMin: document.getElementById('catMin'),
+            sidePending: document.getElementById('sidePending'),
+            sideCompleted: document.getElementById('sideCompleted'),
+            sidebarSync: document.getElementById('sidebarSync'),
             empName: document.getElementById('empName'),
             empUser: document.getElementById('empUser'),
             empPass: document.getElementById('empPass'),
@@ -184,11 +269,26 @@
         };
         if (localStorage.getItem('isLoggedIn') !== 'true') window.location.href = "admin.html";
 
-        function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('active'); }
+        function setSidebarState(isOpen){
+            const open = Boolean(isOpen);
+            els.sidebar.classList.toggle('active', open);
+            els.sidebarBackdrop.classList.toggle('active', open);
+            els.body.classList.toggle('sidebar-open', open);
+            els.sidebar.setAttribute('aria-hidden', String(!open));
+            els.sidebarToggle.setAttribute('aria-expanded', String(open));
+            els.sidebarToggle.classList.toggle('active', open);
+        }
+        function toggleSidebar(){ setSidebarState(!els.sidebar.classList.contains('active')); }
+        function closeSidebar(){ setSidebarState(false); }
+        setSidebarState(false);
         function escapeHtml(v){ return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;').replace(/'/g,'&#39;'); }
         function safeText(v,f='-'){ return v === null || v === undefined || v === '' ? f : escapeHtml(v); }
         function formatCurrency(v){ const n = Number(v); return v === null || v === undefined || v === '' ? '-' : (Number.isNaN(n) ? escapeHtml(v) : n.toLocaleString('en-IN')); }
-        function setSyncStamp(){ document.getElementById('syncDate').innerText = new Date().toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
+        function setSyncStamp(){
+            const stamp = new Date().toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+            document.getElementById('syncDate').innerText = stamp;
+            els.sidebarSync.innerText = stamp;
+        }
 
         async function loadData(){
             try{
@@ -210,6 +310,7 @@
             const total = data.length, pending = data.filter(s=>s.status==='Pending').length, completed = data.filter(s=>s.status==='Completed').length, rejected = data.filter(s=>s.status==='Rejected').length, rate = total ? Math.round(completed / total * 100) : 0;
             els.cTotal.innerText = total; els.cPen.innerText = pending; els.cComp.innerText = completed; els.cRej.innerText = rejected;
             els.heroTotal.innerText = total; els.heroPending.innerText = pending; els.heroRate.innerText = `${rate}%`;
+            els.sidePending.innerText = pending; els.sideCompleted.innerText = completed;
             els.catGen.innerText = data.filter(s=>s.category==='General').length;
             els.catOBC.innerText = data.filter(s=>s.category==='OBC').length;
             els.catSC.innerText = data.filter(s=>s.category==='SC').length;
@@ -292,6 +393,7 @@
         });
         document.getElementById('modal').addEventListener('click', e => { if(e.target.id === 'modal') closeModal(); });
         document.getElementById('staffModal').addEventListener('click', e => { if(e.target.id === 'staffModal') closeStaffModal(); });
+        document.addEventListener('keydown', e => { if(e.key === 'Escape') closeSidebar(); });
         loadData();
     </script>
 </body>
